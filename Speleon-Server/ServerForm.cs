@@ -52,9 +52,10 @@ namespace Speleon_Server
                 Socket client = ServerSocket.Accept();
                 byte[] a = new byte[256];
                 client.Receive(a);
-                string login = Encoding.ASCII.GetString(a);
+                //删除结束字符
+                string login = Encoding.ASCII.GetString(a).Trim('\0');
                 string[] b= login.Split('#');
-                object check= UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}'", b[0]);
+                object check= UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';", b[0],b[1]);
                 if (check == null)
                 {
                     MessageBox.Show("null");
