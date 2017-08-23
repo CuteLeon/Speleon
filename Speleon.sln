@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speleon-Client", "Speleon-Client\Speleon-Client.csproj", "{884A5583-78E3-47B9-8AAE-A11D3E8C20F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speleon-Server", "Speleon-Server\Speleon-Server.csproj", "{6BA3BCF0-A77C-4122-A9F7-09AC30AED941}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{884A5583-78E3-47B9-8AAE-A11D3E8C20F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884A5583-78E3-47B9-8AAE-A11D3E8C20F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884A5583-78E3-47B9-8AAE-A11D3E8C20F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884A5583-78E3-47B9-8AAE-A11D3E8C20F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA3BCF0-A77C-4122-A9F7-09AC30AED941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA3BCF0-A77C-4122-A9F7-09AC30AED941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA3BCF0-A77C-4122-A9F7-09AC30AED941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA3BCF0-A77C-4122-A9F7-09AC30AED941}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5ACE9449-7D56-49F4-AF8C-48C34CC5A79D}
+	EndGlobalSection
+EndGlobal
