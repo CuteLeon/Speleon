@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Speleon_Client
+namespace Speleon_Server
 {
     static class UnityModule
     {

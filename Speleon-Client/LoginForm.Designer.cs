@@ -30,15 +30,19 @@
         {
             this.ActiveBGIBOX = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
+            this.LoginAreaLabel = new System.Windows.Forms.Label();
+            this.UserIDTextBox = new System.Windows.Forms.TextBox();
+            this.PasswordTextBox = new System.Windows.Forms.TextBox();
+            this.LoginOnButton = new Speleon_Client.LabelButton();
             this.MinButton = new Speleon_Client.LabelButton();
             this.ClockButton = new Speleon_Client.LabelButton();
-            this.labelButton1 = new Speleon_Client.LabelButton();
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).BeginInit();
             this.SuspendLayout();
             // 
             // ActiveBGIBOX
             // 
             this.ActiveBGIBOX.BackColor = System.Drawing.Color.White;
+            this.ActiveBGIBOX.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ActiveBGIBOX.Dock = System.Windows.Forms.DockStyle.Top;
             this.ActiveBGIBOX.Image = global::Speleon_Client.UnityResource.LoginBGI;
             this.ActiveBGIBOX.Location = new System.Drawing.Point(0, 0);
@@ -60,6 +64,56 @@
             this.TitleLabel.TabIndex = 3;
             this.TitleLabel.Text = "Speleon";
             this.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // LoginAreaLabel
+            // 
+            this.LoginAreaLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LoginAreaLabel.Image = global::Speleon_Client.UnityResource.LoginArea;
+            this.LoginAreaLabel.Location = new System.Drawing.Point(52, 64);
+            this.LoginAreaLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.LoginAreaLabel.Name = "LoginAreaLabel";
+            this.LoginAreaLabel.Size = new System.Drawing.Size(396, 158);
+            this.LoginAreaLabel.TabIndex = 5;
+            // 
+            // UserIDTextBox
+            // 
+            this.UserIDTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.UserIDTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.UserIDTextBox.Font = new System.Drawing.Font("微软雅黑", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.UserIDTextBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.UserIDTextBox.Location = new System.Drawing.Point(222, 107);
+            this.UserIDTextBox.Name = "UserIDTextBox";
+            this.UserIDTextBox.Size = new System.Drawing.Size(145, 20);
+            this.UserIDTextBox.TabIndex = 6;
+            this.UserIDTextBox.Text = "88888";
+            // 
+            // PasswordTextBox
+            // 
+            this.PasswordTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.PasswordTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PasswordTextBox.Font = new System.Drawing.Font("微软雅黑", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.PasswordTextBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.PasswordTextBox.Location = new System.Drawing.Point(222, 148);
+            this.PasswordTextBox.Name = "PasswordTextBox";
+            this.PasswordTextBox.PasswordChar = '~';
+            this.PasswordTextBox.Size = new System.Drawing.Size(145, 20);
+            this.PasswordTextBox.TabIndex = 7;
+            this.PasswordTextBox.Text = "123456";
+            // 
+            // LoginOnButton
+            // 
+            this.LoginOnButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LoginOnButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.LoginOnButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
+            this.LoginOnButton.Location = new System.Drawing.Point(156, 262);
+            this.LoginOnButton.Margin = new System.Windows.Forms.Padding(0);
+            this.LoginOnButton.Name = "LoginOnButton";
+            this.LoginOnButton.Size = new System.Drawing.Size(188, 64);
+            this.LoginOnButton.TabIndex = 4;
+            this.LoginOnButton.Tag = "ColorfulButton";
+            this.LoginOnButton.Text = "Login On";
+            this.LoginOnButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoginOnButton.Click += new System.EventHandler(this.LoginOnButton_Click);
             // 
             // MinButton
             // 
@@ -83,27 +137,16 @@
             this.ClockButton.Tag = "Close";
             this.ClockButton.Click += new System.EventHandler(this.ClockButton_Click);
             // 
-            // labelButton1
-            // 
-            this.labelButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labelButton1.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.labelButton1.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
-            this.labelButton1.Location = new System.Drawing.Point(156, 262);
-            this.labelButton1.Margin = new System.Windows.Forms.Padding(0);
-            this.labelButton1.Name = "labelButton1";
-            this.labelButton1.Size = new System.Drawing.Size(188, 64);
-            this.labelButton1.TabIndex = 4;
-            this.labelButton1.Tag = "ColorfulButton";
-            this.labelButton1.Text = "Login On";
-            this.labelButton1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(500, 328);
-            this.Controls.Add(this.labelButton1);
+            this.Controls.Add(this.PasswordTextBox);
+            this.Controls.Add(this.UserIDTextBox);
+            this.Controls.Add(this.LoginAreaLabel);
+            this.Controls.Add(this.LoginOnButton);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.MinButton);
             this.Controls.Add(this.ClockButton);
@@ -114,9 +157,11 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Speleon-Login";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.Load += new System.EventHandler(this.LoginForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -126,7 +171,10 @@
         private LabelButton ClockButton;
         private LabelButton MinButton;
         private System.Windows.Forms.Label TitleLabel;
-        private LabelButton labelButton1;
+        private LabelButton LoginOnButton;
+        private System.Windows.Forms.Label LoginAreaLabel;
+        private System.Windows.Forms.TextBox UserIDTextBox;
+        private System.Windows.Forms.TextBox PasswordTextBox;
     }
 }
 

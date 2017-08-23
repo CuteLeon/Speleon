@@ -123,6 +123,16 @@ namespace Speleon_Client {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap LoginArea {
+            get {
+                object obj = ResourceManager.GetObject("LoginArea", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap LoginBGI {
             get {
                 object obj = ResourceManager.GetObject("LoginBGI", resourceCulture);
