@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ namespace Speleon_Client
 {
     public partial class LoginForm : Form
     {
+
+
         private enum HideTo
         {
             Min,
@@ -34,7 +38,8 @@ namespace Speleon_Client
             this.SetStyle(ControlStyles.UserPaint, true);
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             UpdateStyles();
-            
+
+            UnityModule.DrawWindowShadow(this);
             UnityModule.DebugPrint("窗体创建成功");
         }
 
@@ -104,24 +109,46 @@ namespace Speleon_Client
 
         private void LoginOnButton_Click(object sender, EventArgs e)
         {
-            Socket LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            LoginSocket.Connect("localhost", 17417);
-            LoginSocket.Send(Encoding.ASCII.GetBytes(string.Format("{0}#{1}",UserIDTextBox.Text,PasswordTextBox.Text)));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
+                LoginOnButton.Enabled = false;
+                LoginOnButton.Text = "Signing ...";
+                try
+                {
+                    Socket LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    LoginSocket.Connect("localhost", 17417);
+                    LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.Login, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
 
-            byte[] a = new byte[256];
-            LoginSocket.Receive(a);
-            MessageBox.Show(Encoding.ASCII.GetString(a));
-            /*
-            LoginSocket.Send(BitConverter.GetBytes(65535));
-            while (true)
+                    byte[] SignResultBytes = new byte[1024];
+                    LoginSocket.Receive(SignResultBytes);
+
+                    MessageBox.Show(Encoding.ASCII.GetString(SignResultBytes));
+                    LoginSocket.Close();
+                }
+                catch (Exception ex)
+                {
+                    UnityModule.DebugPrint("连接服务器时遇到错误！{0}",ex.Message);
+                    LoginOnButton.Text = "Sign In";
+                    LoginOnButton.Enabled = true;
+                }
+            }));
+        }
+
+        private void UserIDTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //限定用户账户输入框尽可接收数字和退格
+            if (!char.IsNumber(e.KeyChar) && e.KeyChar!= (char)Keys.Back)
+                e.Handled = true;
+        }
+
+        private void LoginForm_Paint(object sender, PaintEventArgs e)
+        {
+            //Color FColor = Color.FromArgb(255,71,194,255);
+            //Color TColor = Color.FromArgb(255,16,216,110);
+            using (Brush linearGradientBrush = new LinearGradientBrush(this.ClientRectangle, Color.WhiteSmoke, Color.White, LinearGradientMode.ForwardDiagonal))
             {
-                byte[] bits = new byte[256];
-                int r = fs.Read(bits, 0, bits.Length);
-                if (r <= 0) break;
-                LoginSocket.Send(bits, r, SocketFlags.None);
+                //绘制渐变
+                e.Graphics.FillRectangle(linearGradientBrush, this.ClientRectangle);
             }
-            */
-            LoginSocket.Close();
         }
     }
 }

@@ -11,11 +11,28 @@ namespace Speleon_Client
 {
     static class UnityModule
     {
+        //用于绘制窗体阴影
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int SetClassLong(IntPtr hwnd, int nIndex, int dwNewLong);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetClassLong(IntPtr hwnd, int nIndex);
+        const int CS_DropSHADOW = 0x20000;
+        const int GCL_STYLE = (-26);
+
         //用于鼠标拖动无边框窗体
         [DllImportAttribute("user32.dll")] public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")] public static extern bool ReleaseCapture();
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
+
+        /// <summary>
+        /// 为窗体绘制阴影
+        /// </summary>
+        /// <param name="HostForm"></param>
+        static public void DrawWindowShadow(Form HostForm)
+        {
+            SetClassLong(HostForm.Handle, GCL_STYLE, GetClassLong(HostForm.Handle, GCL_STYLE) | CS_DropSHADOW);
+        }
 
         /// <summary>
         /// 注册以帮助鼠标拖动无边框窗体

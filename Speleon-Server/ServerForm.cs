@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,28 +51,40 @@ namespace Speleon_Server
             while (true)
             {
                 Socket client = ServerSocket.Accept();
-                byte[] a = new byte[256];
+                byte[] a = new byte[1024];
                 client.Receive(a);
                 //删除结束字符
                 string login = Encoding.ASCII.GetString(a).Trim('\0');
-                string[] b= login.Split('#');
-                object check= UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';", b[0],b[1]);
-                if (check == null)
-                {
-                    MessageBox.Show("null");
-                }
-                else
-                {
-                    client.Send(Encoding.ASCII.GetBytes(check as string));
-                }
-                /*
-                byte[] bitLen = new byte[8];
-                client.Receive(bitLen, bitLen.Length, SocketFlags.None);
-                long contentLen = BitConverter.ToInt64(bitLen, 0);
-                byte[] bits = new byte[256];
-                int r = client.Receive(bits, bits.Length, SocketFlags.None);
-                */
+                MessageBox.Show(login);
 
+
+                // .*? 任意匹配
+                //(?<目标>.+?)  目标
+                string TitlePattern = "HEY_CVER=(?<clientversion>.+?)_CMDTYPE=(?<cmdtype>.+?)_USERID=(?<userid>.+?)_PASSWORD=(?<password>.+?)\n";
+                Regex ItemRegex = new Regex(TitlePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                Match ItemMatchResult = ItemRegex.Match(login);
+
+                switch (ItemMatchResult.Groups["cmdtype"].Value)
+                {
+                    case "LOGIN":
+                        {
+                            object check = UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';",
+                                ItemMatchResult.Groups["userid"].Value,
+                                ItemMatchResult.Groups["password"].Value);
+                            if (check == null)
+                            {
+                                UnityModule.DebugPrint("错误的密码验证！");
+                            }
+                            else
+                            {
+                                client.Send(Encoding.ASCII.GetBytes(check as string));
+                            }
+                            break;
+                        }
+                }
+
+                
+                
                 client.Close();
             }
         }

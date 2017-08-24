@@ -82,10 +82,12 @@
             this.UserIDTextBox.Font = new System.Drawing.Font("微软雅黑", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.UserIDTextBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
             this.UserIDTextBox.Location = new System.Drawing.Point(222, 107);
+            this.UserIDTextBox.MaxLength = 10;
             this.UserIDTextBox.Name = "UserIDTextBox";
             this.UserIDTextBox.Size = new System.Drawing.Size(145, 20);
             this.UserIDTextBox.TabIndex = 6;
             this.UserIDTextBox.Text = "88888";
+            this.UserIDTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.UserIDTextBox_KeyPress);
             // 
             // PasswordTextBox
             // 
@@ -94,6 +96,7 @@
             this.PasswordTextBox.Font = new System.Drawing.Font("微软雅黑", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.PasswordTextBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
             this.PasswordTextBox.Location = new System.Drawing.Point(222, 148);
+            this.PasswordTextBox.MaxLength = 16;
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '~';
             this.PasswordTextBox.Size = new System.Drawing.Size(145, 20);
@@ -102,16 +105,17 @@
             // 
             // LoginOnButton
             // 
+            this.LoginOnButton.BackColor = System.Drawing.Color.Transparent;
             this.LoginOnButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.LoginOnButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
             this.LoginOnButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
-            this.LoginOnButton.Location = new System.Drawing.Point(156, 262);
+            this.LoginOnButton.Location = new System.Drawing.Point(156, 256);
             this.LoginOnButton.Margin = new System.Windows.Forms.Padding(0);
             this.LoginOnButton.Name = "LoginOnButton";
-            this.LoginOnButton.Size = new System.Drawing.Size(188, 64);
+            this.LoginOnButton.Size = new System.Drawing.Size(188, 72);
             this.LoginOnButton.TabIndex = 4;
             this.LoginOnButton.Tag = "ColorfulButton";
-            this.LoginOnButton.Text = "Login On";
+            this.LoginOnButton.Text = "Sign In";
             this.LoginOnButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.LoginOnButton.Click += new System.EventHandler(this.LoginOnButton_Click);
             // 
@@ -146,11 +150,11 @@
             this.Controls.Add(this.PasswordTextBox);
             this.Controls.Add(this.UserIDTextBox);
             this.Controls.Add(this.LoginAreaLabel);
-            this.Controls.Add(this.LoginOnButton);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.MinButton);
             this.Controls.Add(this.ClockButton);
             this.Controls.Add(this.ActiveBGIBOX);
+            this.Controls.Add(this.LoginOnButton);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "LoginForm";
@@ -159,6 +163,7 @@
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.LoginForm_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

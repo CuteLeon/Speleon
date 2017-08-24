@@ -147,12 +147,6 @@ namespace Speleon_Server
         /// <returns>读取结果</returns>
         public object ExecuteScalar(string SQLCommand,params object[] SQLValue)
         {
-            Debug.Print("————————————");
-            Debug.Print(SQLCommand);
-            Debug.Print("————————————");
-            Debug.Print("————————————");
-            Debug.Print(string.Format(SQLCommand, SQLValue));
-            Debug.Print("————————————");
             return ExecuteScalar(string.Format(SQLCommand, SQLValue));
         }
 
@@ -163,10 +157,6 @@ namespace Speleon_Server
         /// <returns>读取结果</returns>
         public object ExecuteScalar(string SQLCommand)
         {
-            Debug.Print("————————————");
-            Debug.Print(SQLCommand);
-            Debug.Print("————————————");
-
             if (DataBaseConnection == null)
             {
                 UnityModule.DebugPrint("数据库连接未创建，无法读取SQL:" + SQLCommand);
