@@ -17,11 +17,13 @@ namespace Speleon_Client
 {
     public partial class LoginForm : Form
     {
-
+        Socket LoginSocket;
+        Thread LoginThread;
 
         private enum HideTo
         {
             Min,
+            JustHide,
             Close
         }
 
@@ -75,6 +77,7 @@ namespace Speleon_Client
         {
             UnityModule.DebugPrint("开始动态隐藏窗体...");
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
+                int IniTop = this.Top;
                 while (this.Opacity>0)
                 {
                     this.Opacity -= 0.1;
@@ -87,6 +90,13 @@ namespace Speleon_Client
                     UnityModule.DebugPrint("最小化窗体");
                     this.WindowState = FormWindowState.Minimized;
                     this.Opacity = 1.0;
+                    this.Top = IniTop;
+                }
+                else if (hideTo == HideTo.JustHide)
+                {
+                    this.Hide();
+                    this.Opacity = 1.0;
+                    this.Top = IniTop;
                 }
                 else if (hideTo == HideTo.Close)
                 {
@@ -107,49 +117,26 @@ namespace Speleon_Client
             }
         }
 
+        bool Logining = false;
         private void LoginOnButton_Click(object sender, EventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
-                LoginOnButton.Enabled = false;
-                LoginOnButton.Text = "Signing ...";
-                try
-                {
-                    Socket LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    LoginSocket.Connect("localhost", 17417);
-                    LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignIn, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
-                    byte[] SignResultBytes = new byte[1024];
-                    LoginSocket.Receive(SignResultBytes);
-                    string SignResult = Encoding.ASCII.GetString(SignResultBytes).Trim('\0');
-
-                    UnityModule.DebugPrint("接收到登录结果：{0}", SignResult);
-
-                    if (SignResult.StartsWith(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully)))
-                    {
-                        this.Invoke(new Action(()=>{new MyMessageBox("登陆成功，欢迎使用！",MyMessageBox.IconType.Info).ShowDialog(this);}));
-                    }
-                    else
-                    {
-                        this.Invoke(new Action(() => { new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this); }));
-                    }
-
-                    LoginSocket.Close();
-                    UnityModule.DebugPrint("验证登录TCP连接已经关闭 ...");
-                }
-                catch (Exception ex)
-                {
-                    UnityModule.DebugPrint("登录遇到错误！{0}",ex.Message);
-                    this.Invoke(new Action(() =>
-                    {
-                        if (new MyMessageBox("登录遇到错误，是否重试？\n" + ex.Message, MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
-                        {
-
-                        }
-                    }));
-                }
-
+            if (!Logining)
+            {
+                //开始登录
+                Logining = true;
+                LoginThread = new Thread(Login);
+                LoginThread.Start();
+            }
+            else
+            {
+                Logining = false;
+                LoginSocket?.Close();
+                LoginSocket?.Dispose();
+                if(LoginThread?.ThreadState== System.Threading.ThreadState.Running) LoginThread?.Abort();
+                UserIDTextBox.Enabled = true;
+                PasswordTextBox.Enabled = true;
                 LoginOnButton.Text = "Sign In";
-                LoginOnButton.Enabled = true;
-            }));
+            }
         }
 
         private void UserIDTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -167,6 +154,82 @@ namespace Speleon_Client
                 e.Graphics.FillRectangle(linearGradientBrush, this.ClientRectangle);
             }
         }
+
+        private void Login()
+        {
+            this.Invoke(new Action(() => {
+                UserIDTextBox.Enabled = false;
+                PasswordTextBox.Enabled = false;
+                LoginOnButton.Text = "Cancel";
+                this.Invalidate();
+            }));
+
+            try
+            {
+                LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                LoginSocket.Connect("localhost", 17417);
+                LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignIn, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
+                byte[] SignResultBytes = new byte[1024];
+                LoginSocket.Receive(SignResultBytes);
+                string SignResult = Encoding.ASCII.GetString(SignResultBytes).Trim('\0');
+
+                UnityModule.DebugPrint("接收到登录结果：{0}", SignResult);
+
+                if (SignResult.StartsWith(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully)))
+                {
+                    //登录成功
+                    this.Invoke(new Action(() =>
+                    {
+                        LoginOnButton.Text = "Success.";
+                        this.Invalidate();
+                        new ClientForm().Show();
+                        HideMe(HideTo.JustHide);
+                    }));
+                }
+                else
+                {
+                    //登录失败
+                    this.Invoke(new Action(() =>
+                    {
+                        new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this);
+                        LoginOnButton.Text = "Sign In";
+                    }));
+                }
+                LoginSocket?.Close();
+                UnityModule.DebugPrint("验证登录TCP连接已经关闭 ...");
+
+                UserIDTextBox.Enabled = true;
+                PasswordTextBox.Enabled = true;
+                this.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                if (ex is ThreadAbortException) return;
+
+                Logining = false;
+                //登录出错
+                UnityModule.DebugPrint("登录遇到错误！{0}", ex.Message);
+                this.Invoke(new Action(() =>
+                {
+                    if (new MyMessageBox("登录遇到错误，是否重试？\n" + ex.Message, MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            LoginOnButton_Click(null, null);
+                        }));
+                    }
+                    else
+                    {
+                        UserIDTextBox.Enabled = true;
+                        PasswordTextBox.Enabled = true;
+                        LoginOnButton.Text = "Sign In";
+                        this.Invalidate();
+                    }
+                }));
+            }
+        }
+
+
     }
 }
 

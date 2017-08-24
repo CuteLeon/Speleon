@@ -153,7 +153,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MyMessageBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "智能家居解决方案";
+            this.Text = "Speleon";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MyMessageBox_FormClosing);
             this.Load += new System.EventHandler(this.MyMessageBox_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MyMessageBox_Paint);

@@ -48,7 +48,7 @@ namespace Speleon_Client
         /// </summary>
         /// <param name="MessageText">消息文本</param>
         /// <param name="iconType">图表类型</param>
-        public MyMessageBox(string MessageText, IconType iconType) : this(MessageText, "智能家居系统：", iconType){ }
+        public MyMessageBox(string MessageText, IconType iconType= IconType.Info) : this(MessageText, "Speleon：", iconType){ }
 
         /// <summary>
         /// 弹出提示窗口
@@ -56,7 +56,7 @@ namespace Speleon_Client
         /// <param name="MessageText">消息文本</param>
         /// <param name="Title">消息标题</param>
         /// <param name="iconType">图表类型</param>
-        public MyMessageBox(string MessageText,string Title,IconType iconType)
+        public MyMessageBox(string MessageText,string Title,IconType iconType= IconType.Info)
         {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
@@ -186,8 +186,9 @@ namespace Speleon_Client
         /// <param name="UserInput">用于接收数据的字符串对象（ref 传址）</param>
         /// <param name="DefaultString">默认字符串</param>
         /// <param name="MaxLength">最大文本长度</param>
+        /// <param name="Owner">模态窗口的父窗口</param>
         /// <returns>输入框返回值（判断用户是否取消了输入）</returns>
-        static public DialogResult ShowInputBox(string InputBoxTips,ref string UserInput,string DefaultString,int MaxLength)
+        static public DialogResult ShowInputBox(string InputBoxTips,ref string UserInput,string DefaultString,int MaxLength,Form Owner=null)
         {
             MyMessageBox InputBoxForm = new MyMessageBox(InputBoxTips,"请输入信息：",IconType.Question);
             InputBoxForm.MessageLabel.Height = 70;
@@ -200,7 +201,7 @@ namespace Speleon_Client
                 else if (y.KeyCode == Keys.Enter)
                     InputBoxForm.OKButton_Click(InputBoxForm.OKButton, new EventArgs());
             });
-            DialogResult InputBoxDialogResult = InputBoxForm.ShowDialog();
+            DialogResult InputBoxDialogResult = InputBoxForm.ShowDialog(Owner);
             if (InputBoxDialogResult == DialogResult.OK)
             {
                 UserInput = InputBoxForm.InputTextBox.Text;
