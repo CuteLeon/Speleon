@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Speleon_Client
+namespace Speleon_Server
 {
     static class ProtocolFormatter
     {
+        /// <summary>
+        /// 服务器收到的协议数据类型
+        /// </summary>
         public enum CMDType
         {
             SignIn,
@@ -27,9 +30,9 @@ namespace Speleon_Client
             //每条协议最后使用换行符结束
             switch (cmdType)
             {
-                case CMDType.Message:
+                case CMDType.SignIn:
                     {
-                        return "";// "HEY_CVER=(?<clientversion>.+?)_CMDTYPE=(?<cmdtype>.+?)_USERID=(?<userid>.+?)_PASSWORD=(?<password>.+?)\n";
+                        return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
                     }
                 default:
                     {
@@ -43,25 +46,21 @@ namespace Speleon_Client
         /// </summary>
         /// <param name="cmdType">协议类型</param>
         /// <returns>协议字符串</returns>
-        static public string FormatProtocol(CMDType cmdType,params object[] ProtocalValues)
+        static public string FormatProtocol(CMDType cmdType, params object[] ProtocalValues)
         {
-            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}",cmdType.ToString(),string.Join("/",ProtocalValues));
+            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}", cmdType.ToString(), string.Join("/", ProtocalValues));
             //每条协议最后加一个换行符，否则服务端无法使用正则匹配最后一个参数
             try
             {
                 switch (cmdType)
                 {
-                    case CMDType.SignIn:
-                        {
-                                return string.Format("HEY_CVER={0}_CMDTYPE=SIGNIN_USERID={1}_PASSWORD={2}\n", ProtocalValues[0], ProtocalValues[1], ProtocalValues[2]);
-                        }
                     case CMDType.SignInSuccessfully:
                         {
-                            return "HI_CMDTYPE=SIGNINSUCCESSFULLY";
+                            return String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}",ProtocalValues[0] as string);
                         }
                     case CMDType.SignInUnsuccessfully:
                         {
-                            return "HI_CMDTYPE=SIGNINUNSUCCESSFULLY";
+                            return String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}", ProtocalValues[0] as string);
                         }
                     default:
                         {
@@ -71,10 +70,9 @@ namespace Speleon_Client
             }
             catch (Exception ex)
             {
-                UnityModule.DebugPrint("获取 {0} 通信协议时遇到错误：{1}",cmdType.ToString(),ex.Message);
+                UnityModule.DebugPrint("获取 {0} 通信协议时遇到错误：{1}", cmdType.ToString(), ex.Message);
                 return "";
             }
         }
-
     }
 }

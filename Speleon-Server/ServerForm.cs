@@ -50,34 +50,35 @@ namespace Speleon_Server
 
             while (true)
             {
-                Socket client = ServerSocket.Accept();
-                byte[] a = new byte[1024];
-                client.Receive(a);
+                Socket ClientSocket = ServerSocket.Accept();
+                byte[] ClientData = new byte[1024];
+                ClientSocket.Receive(ClientData);
                 //删除结束字符
-                string login = Encoding.ASCII.GetString(a).Trim('\0');
-                MessageBox.Show(login);
+                string ClientProtocol = Encoding.ASCII.GetString(ClientData).Trim('\0');
 
-
-                // .*? 任意匹配
-                //(?<目标>.+?)  目标
-                string TitlePattern = "HEY_CVER=(?<clientversion>.+?)_CMDTYPE=(?<cmdtype>.+?)_USERID=(?<userid>.+?)_PASSWORD=(?<password>.+?)\n";
+                string TitlePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.SignIn);
                 Regex ItemRegex = new Regex(TitlePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                Match ItemMatchResult = ItemRegex.Match(login);
+                Match ItemMatchResult = ItemRegex.Match(ClientProtocol);
+                string cmdType = ItemMatchResult.Groups["CMDTYPE"].Value.ToUpper();
+                string UserID = ItemMatchResult.Groups["USERID"].Value;
+                string Password = ItemMatchResult.Groups["PASSWORD"].Value;
 
-                switch (ItemMatchResult.Groups["cmdtype"].Value)
+                switch (cmdType)
                 {
-                    case "LOGIN":
+                    case "SIGNIN":
                         {
-                            object check = UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';",
-                                ItemMatchResult.Groups["userid"].Value,
-                                ItemMatchResult.Groups["password"].Value);
-                            if (check == null)
+                            object USERID = UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';",UserID,Password);
+                            if (USERID != null)
                             {
-                                UnityModule.DebugPrint("错误的密码验证！");
+                                //用户登陆成功！
+                                UnityModule.DebugPrint("用户登录成功！{0}",USERID as string);
+                                ClientSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully, USERID as string)));
                             }
                             else
                             {
-                                client.Send(Encoding.ASCII.GetBytes(check as string));
+                                //用户发生一次错误的密码验证！
+                                UnityModule.DebugPrint("用户登录失败！{0}", UserID);
+                                ClientSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInUnsuccessfully, UserID as string)));
                             }
                             break;
                         }
@@ -85,7 +86,7 @@ namespace Speleon_Server
 
                 
                 
-                client.Close();
+                ClientSocket.Close();
             }
         }
 

@@ -116,20 +116,33 @@ namespace Speleon_Client
                 {
                     Socket LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     LoginSocket.Connect("localhost", 17417);
-                    LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.Login, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
+                    LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignIn, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
 
                     byte[] SignResultBytes = new byte[1024];
                     LoginSocket.Receive(SignResultBytes);
+                    string SignResult = Encoding.ASCII.GetString(SignResultBytes).Trim('\0');
 
-                    MessageBox.Show(Encoding.ASCII.GetString(SignResultBytes));
+                    UnityModule.DebugPrint("接收到登录结果：{0}", SignResult);
+
+                    if (SignResult.StartsWith(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully)))
+                    {
+                        MessageBox.Show("登陆成功！");
+                    }
+                    else
+                    {
+                        MessageBox.Show("登陆失败！");
+                    }
+
                     LoginSocket.Close();
+                    UnityModule.DebugPrint("验证登录TCP连接已经关闭 ...");
                 }
                 catch (Exception ex)
                 {
                     UnityModule.DebugPrint("连接服务器时遇到错误！{0}",ex.Message);
-                    LoginOnButton.Text = "Sign In";
-                    LoginOnButton.Enabled = true;
                 }
+
+                LoginOnButton.Text = "Sign In";
+                LoginOnButton.Enabled = true;
             }));
         }
 

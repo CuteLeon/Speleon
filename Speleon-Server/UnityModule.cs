@@ -35,7 +35,7 @@ namespace Speleon_Server
         /// <param name="DebugMessage">调试信息</param>
         static public void DebugPrint(string DebugMessage)
         {
-            Debug.Print(string.Format("{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage));
+            Debug.Print(string.Format("服务端：{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage));
         }
 
         /// <summary>
