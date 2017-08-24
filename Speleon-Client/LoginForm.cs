@@ -48,7 +48,7 @@ namespace Speleon_Client
             TitleLabel.Image = UnityResource.Speleon.ToBitmap();
             TitleLabel.Parent = ActiveBGIBOX;
             MinButton.Parent = ActiveBGIBOX;
-            ClockButton.Parent = ActiveBGIBOX;
+            CloseButton.Parent = ActiveBGIBOX;
             LoginAreaLabel.Parent = ActiveBGIBOX;
 
             this.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
@@ -117,7 +117,6 @@ namespace Speleon_Client
                     Socket LoginSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     LoginSocket.Connect("localhost", 17417);
                     LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignIn, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
-
                     byte[] SignResultBytes = new byte[1024];
                     LoginSocket.Receive(SignResultBytes);
                     string SignResult = Encoding.ASCII.GetString(SignResultBytes).Trim('\0');
@@ -126,11 +125,11 @@ namespace Speleon_Client
 
                     if (SignResult.StartsWith(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully)))
                     {
-                        MessageBox.Show("登陆成功！");
+                        this.Invoke(new Action(()=>{new MyMessageBox("登陆成功，欢迎使用！",MyMessageBox.IconType.Info).ShowDialog(this);}));
                     }
                     else
                     {
-                        MessageBox.Show("登陆失败！");
+                        this.Invoke(new Action(() => { new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this); }));
                     }
 
                     LoginSocket.Close();
@@ -138,7 +137,14 @@ namespace Speleon_Client
                 }
                 catch (Exception ex)
                 {
-                    UnityModule.DebugPrint("连接服务器时遇到错误！{0}",ex.Message);
+                    UnityModule.DebugPrint("登录遇到错误！{0}",ex.Message);
+                    this.Invoke(new Action(() =>
+                    {
+                        if (new MyMessageBox("登录遇到错误，是否重试？\n" + ex.Message, MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
+                        {
+
+                        }
+                    }));
                 }
 
                 LoginOnButton.Text = "Sign In";
@@ -155,8 +161,6 @@ namespace Speleon_Client
 
         private void LoginForm_Paint(object sender, PaintEventArgs e)
         {
-            //Color FColor = Color.FromArgb(255,71,194,255);
-            //Color TColor = Color.FromArgb(255,16,216,110);
             using (Brush linearGradientBrush = new LinearGradientBrush(this.ClientRectangle, Color.WhiteSmoke, Color.White, LinearGradientMode.ForwardDiagonal))
             {
                 //绘制渐变

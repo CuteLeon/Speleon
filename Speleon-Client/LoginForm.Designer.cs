@@ -33,9 +33,9 @@
             this.LoginAreaLabel = new System.Windows.Forms.Label();
             this.UserIDTextBox = new System.Windows.Forms.TextBox();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
-            this.LoginOnButton = new Speleon_Client.LabelButton();
             this.MinButton = new Speleon_Client.LabelButton();
-            this.ClockButton = new Speleon_Client.LabelButton();
+            this.CloseButton = new Speleon_Client.LabelButton();
+            this.LoginOnButton = new Speleon_Client.LabelButton();
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).BeginInit();
             this.SuspendLayout();
             // 
@@ -101,7 +101,29 @@
             this.PasswordTextBox.PasswordChar = '~';
             this.PasswordTextBox.Size = new System.Drawing.Size(145, 20);
             this.PasswordTextBox.TabIndex = 7;
-            this.PasswordTextBox.Text = "123456";
+            this.PasswordTextBox.Text = "234567";
+            // 
+            // MinButton
+            // 
+            this.MinButton.BackColor = System.Drawing.Color.Transparent;
+            this.MinButton.Image = global::Speleon_Client.UnityResource.Min_0;
+            this.MinButton.Location = new System.Drawing.Point(430, 0);
+            this.MinButton.Name = "MinButton";
+            this.MinButton.Size = new System.Drawing.Size(32, 21);
+            this.MinButton.TabIndex = 2;
+            this.MinButton.Tag = "Min";
+            this.MinButton.Click += new System.EventHandler(this.MinButton_Click);
+            // 
+            // CloseButton
+            // 
+            this.CloseButton.BackColor = System.Drawing.Color.Transparent;
+            this.CloseButton.Image = global::Speleon_Client.UnityResource.Close_0;
+            this.CloseButton.Location = new System.Drawing.Point(461, 0);
+            this.CloseButton.Name = "CloseButton";
+            this.CloseButton.Size = new System.Drawing.Size(39, 21);
+            this.CloseButton.TabIndex = 1;
+            this.CloseButton.Tag = "Close";
+            this.CloseButton.Click += new System.EventHandler(this.ClockButton_Click);
             // 
             // LoginOnButton
             // 
@@ -119,28 +141,6 @@
             this.LoginOnButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.LoginOnButton.Click += new System.EventHandler(this.LoginOnButton_Click);
             // 
-            // MinButton
-            // 
-            this.MinButton.BackColor = System.Drawing.Color.Transparent;
-            this.MinButton.Image = global::Speleon_Client.UnityResource.Min_0;
-            this.MinButton.Location = new System.Drawing.Point(430, 0);
-            this.MinButton.Name = "MinButton";
-            this.MinButton.Size = new System.Drawing.Size(32, 21);
-            this.MinButton.TabIndex = 2;
-            this.MinButton.Tag = "Min";
-            this.MinButton.Click += new System.EventHandler(this.MinButton_Click);
-            // 
-            // ClockButton
-            // 
-            this.ClockButton.BackColor = System.Drawing.Color.Transparent;
-            this.ClockButton.Image = global::Speleon_Client.UnityResource.Close_0;
-            this.ClockButton.Location = new System.Drawing.Point(461, 0);
-            this.ClockButton.Name = "ClockButton";
-            this.ClockButton.Size = new System.Drawing.Size(39, 21);
-            this.ClockButton.TabIndex = 1;
-            this.ClockButton.Tag = "Close";
-            this.ClockButton.Click += new System.EventHandler(this.ClockButton_Click);
-            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -152,7 +152,7 @@
             this.Controls.Add(this.LoginAreaLabel);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.MinButton);
-            this.Controls.Add(this.ClockButton);
+            this.Controls.Add(this.CloseButton);
             this.Controls.Add(this.ActiveBGIBOX);
             this.Controls.Add(this.LoginOnButton);
             this.DoubleBuffered = true;
@@ -173,7 +173,7 @@
         #endregion
 
         private System.Windows.Forms.PictureBox ActiveBGIBOX;
-        private LabelButton ClockButton;
+        private LabelButton CloseButton;
         private LabelButton MinButton;
         private System.Windows.Forms.Label TitleLabel;
         private LabelButton LoginOnButton;

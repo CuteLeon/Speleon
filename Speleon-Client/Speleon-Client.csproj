@@ -72,6 +72,9 @@
     <Compile Include="MyMessageBox.Designer.cs">
       <DependentUpon>MyMessageBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolFormatter.cs" />
@@ -172,6 +175,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\LoginArea.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OKButton_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OKButton_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OKButton_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultButton_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultButton_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultButton_2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
