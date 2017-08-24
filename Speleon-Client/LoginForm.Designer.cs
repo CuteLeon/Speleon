@@ -35,7 +35,7 @@
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.MinButton = new Speleon_Client.LabelButton();
             this.CloseButton = new Speleon_Client.LabelButton();
-            this.LoginOnButton = new Speleon_Client.LabelButton();
+            this.SignInButton = new Speleon_Client.LabelButton();
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).BeginInit();
             this.SuspendLayout();
             // 
@@ -123,23 +123,23 @@
             this.CloseButton.Size = new System.Drawing.Size(39, 21);
             this.CloseButton.TabIndex = 1;
             this.CloseButton.Tag = "Close";
-            this.CloseButton.Click += new System.EventHandler(this.ClockButton_Click);
+            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
             // 
-            // LoginOnButton
+            // SignInButton
             // 
-            this.LoginOnButton.BackColor = System.Drawing.Color.Transparent;
-            this.LoginOnButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.LoginOnButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.LoginOnButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
-            this.LoginOnButton.Location = new System.Drawing.Point(156, 256);
-            this.LoginOnButton.Margin = new System.Windows.Forms.Padding(0);
-            this.LoginOnButton.Name = "LoginOnButton";
-            this.LoginOnButton.Size = new System.Drawing.Size(188, 72);
-            this.LoginOnButton.TabIndex = 4;
-            this.LoginOnButton.Tag = "ColorfulButton";
-            this.LoginOnButton.Text = "Sign In";
-            this.LoginOnButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.LoginOnButton.Click += new System.EventHandler(this.LoginOnButton_Click);
+            this.SignInButton.BackColor = System.Drawing.Color.Transparent;
+            this.SignInButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.SignInButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.SignInButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
+            this.SignInButton.Location = new System.Drawing.Point(156, 256);
+            this.SignInButton.Margin = new System.Windows.Forms.Padding(0);
+            this.SignInButton.Name = "SignInButton";
+            this.SignInButton.Size = new System.Drawing.Size(188, 72);
+            this.SignInButton.TabIndex = 4;
+            this.SignInButton.Tag = "ColorfulButton";
+            this.SignInButton.Text = "Sign In";
+            this.SignInButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SignInButton.Click += new System.EventHandler(this.SignInButton_Click);
             // 
             // LoginForm
             // 
@@ -154,13 +154,12 @@
             this.Controls.Add(this.MinButton);
             this.Controls.Add(this.CloseButton);
             this.Controls.Add(this.ActiveBGIBOX);
-            this.Controls.Add(this.LoginOnButton);
+            this.Controls.Add(this.SignInButton);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Speleon-Login";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.LoginForm_Paint);
@@ -176,7 +175,7 @@
         private LabelButton CloseButton;
         private LabelButton MinButton;
         private System.Windows.Forms.Label TitleLabel;
-        private LabelButton LoginOnButton;
+        private LabelButton SignInButton;
         private System.Windows.Forms.Label LoginAreaLabel;
         private System.Windows.Forms.TextBox UserIDTextBox;
         private System.Windows.Forms.TextBox PasswordTextBox;

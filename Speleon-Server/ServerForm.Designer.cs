@@ -28,18 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.LogListBox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
+            // 
+            // LogListBox
+            // 
+            this.LogListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.LogListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LogListBox.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LogListBox.ForeColor = System.Drawing.Color.Aqua;
+            this.LogListBox.FormattingEnabled = true;
+            this.LogListBox.ItemHeight = 20;
+            this.LogListBox.Location = new System.Drawing.Point(0, 0);
+            this.LogListBox.Name = "LogListBox";
+            this.LogListBox.Size = new System.Drawing.Size(660, 456);
+            this.LogListBox.TabIndex = 0;
             // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(252, 102);
+            this.ClientSize = new System.Drawing.Size(660, 456);
+            this.Controls.Add(this.LogListBox);
             this.Name = "ServerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Speleon-Server";
-            this.TopMost = true;
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerForm_FormClosing);
             this.Load += new System.EventHandler(this.ServerForm_Load);
             this.ResumeLayout(false);
@@ -47,6 +61,8 @@
         }
 
         #endregion
+
+        public System.Windows.Forms.ListBox LogListBox;
     }
 }
 

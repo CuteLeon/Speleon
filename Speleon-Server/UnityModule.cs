@@ -11,6 +11,8 @@ namespace Speleon_Server
 {
     static class UnityModule
     {
+        static public int ServerPort = 17417;
+
         //用于鼠标拖动无边框窗体
         [DllImportAttribute("user32.dll")] public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")] public static extern bool ReleaseCapture();
@@ -35,7 +37,9 @@ namespace Speleon_Server
         /// <param name="DebugMessage">调试信息</param>
         static public void DebugPrint(string DebugMessage)
         {
-            Debug.Print(string.Format("服务端：{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage));
+            string DebugInfo = string.Format("{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage);
+            (Application.OpenForms[0] as ServerForm).LogListBox.Items.Add(DebugInfo);
+            Debug.Print("服务端："+DebugInfo);
         }
 
         /// <summary>

@@ -52,7 +52,7 @@ namespace Speleon_Server
             try
             {
                 ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                EndPoint TCPIPAndPort = new IPEndPoint(IPAddress.Any, 17417);
+                EndPoint TCPIPAndPort = new IPEndPoint(IPAddress.Any, UnityModule.ServerPort);
                 ServerSocket.Bind(TCPIPAndPort);
                 ServerSocket.Listen(2);
             }
@@ -67,13 +67,14 @@ namespace Speleon_Server
                 Socket ClientSocket=null;
                 try
                 {
-                ClientSocket = ServerSocket.Accept();
-                byte[] ClientData = new byte[1024];
+                    ClientSocket = ServerSocket.Accept();
+                    SocketsDictionary.Add();
+                    byte[] ClientData = new byte[1024];
                     ClientSocket.Receive(ClientData);
 
                     //删除结束字符
                     string ClientProtocol = Encoding.ASCII.GetString(ClientData).Trim('\0');
-                    MessageBox.Show(ClientProtocol);
+                    UnityModule.DebugPrint("收到客户端发送来的数据：{0}",ClientProtocol);
 
                     string TitlePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.SignIn);
                     Regex ItemRegex = new Regex(TitlePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);

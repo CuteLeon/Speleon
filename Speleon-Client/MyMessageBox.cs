@@ -74,6 +74,9 @@ namespace Speleon_Client
                 CancelButton.Hide();
                 OKButton.Left =(this.Width-OKButton.Width)/2;
             }
+
+            //为窗体增加阴影
+            UnityModule.DrawWindowShadow(this);
         }
         #endregion
 

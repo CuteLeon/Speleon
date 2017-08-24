@@ -11,6 +11,10 @@ namespace Speleon_Client
 {
     static class UnityModule
     {
+        static public string ServerIP = "localhost";
+        //static public string ServerIP = "server.ngrok.cc";
+        static public int ServerPort = 17417;
+
         //用于绘制窗体阴影
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SetClassLong(IntPtr hwnd, int nIndex, int dwNewLong);
