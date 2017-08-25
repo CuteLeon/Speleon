@@ -137,15 +137,6 @@ namespace Speleon_Client
             CancelButton.MouseUp += new MouseEventHandler(Button_MouseUp);
         }
 
-        private void MyMessageBox_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (DialogResult == DialogResult.None)
-            {
-                e.Cancel = true;
-                HideMe(DialogResult.Cancel);
-            }
-        }
-
         private void MyMessageBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -178,7 +169,11 @@ namespace Speleon_Client
                     this.Top -= 1;
                     Thread.Sleep(10);
                 }
-                this.DialogResult = (DialogResult)TargetDialogResult;
+                this.Invoke(new Action(()=> {
+                    this.DialogResult = (DialogResult)TargetDialogResult;
+                    //this.Close(); 方法使MyMessageBox()在.Show()方法时也可以被关闭
+                    this.Close();
+                }));
             }));
         }
 
@@ -213,5 +208,13 @@ namespace Speleon_Client
         }
         #endregion
 
+        private void MyMessageBox_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.DialogResult == DialogResult.None)
+            {
+                e.Cancel = true;
+                HideMe(DialogResult.Cancel);
+            }
+        }
     }
 }

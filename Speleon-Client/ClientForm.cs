@@ -17,18 +17,29 @@ namespace Speleon_Client
         #region 变量和枚举
 
         /// <summary>
+        /// 父登录窗体
+        /// </summary>
+        public LoginForm loginForm;
+
+        /// <summary>
         /// 动态隐藏后执行的动作
         /// </summary>
         private enum HideTo
         {
             Min,
-            Close
+            JusetClose,
+            ExitApp
         }
 
         /// <summary>
         /// 全局TCPSocket
         /// </summary>
         Socket UnitySocket;
+
+        /// <summary>
+        /// 后台接收服务器消息线程
+        /// </summary>
+        Thread ReceiveThread = null;
 
         #endregion
 
@@ -82,24 +93,32 @@ namespace Speleon_Client
             if (!AllowToClose)
             {
                 e.Cancel = true;
-                HideMe(HideTo.Close);
+                TryToClose();
             }
         }
 
         private void ClientForm_Shown(object sender, EventArgs e)
         {
-            try
-            {
-                this.Invalidate();
-
-                UnitySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                UnitySocket.Connect(UnityModule.ServerIP, UnityModule.ServerPort);
-                //UnitySocket.Send(Encoding.ASCII.GetBytes("123333333"));
-            }
-            catch (Exception ex)
-            {
-                new MyMessageBox("连接服务器遇到错误：{0}", ex.Message).ShowDialog(this);
-            }
+            this.Invalidate();
+            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate{
+                try
+                {
+                    UnitySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    UnitySocket.Connect(UnityModule.ServerIP, UnityModule.ServerPort);
+                    ReceiveThread = new Thread(ReceiveMessage);
+                    ReceiveThread.Start();
+                    
+                    //发送WHOAMI数据，告诉服务端自己的USERID
+                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.WhoAmI,Application.ProductVersion,UnityModule.USERID)));
+                    UnityModule.DebugPrint("WHOAMI 数据包发送成功！");
+                }
+                catch (Exception ex)
+                {
+                    this.Invoke(new Action(()=> {
+                        new MyMessageBox("连接服务器遇到错误：{0}", ex.Message).ShowDialog(this);
+                    }));
+                }
+            }));
         }
 
         private void ClientForm_Resize(object sender, EventArgs e)
@@ -134,15 +153,9 @@ namespace Speleon_Client
             UnityModule.DebugPrint("点击关闭按钮");
             CloseButton.Image = UnityResource.Close_1;
             CloseButton.Invalidate();
-            if (new MyMessageBox("真的要退出 Speleon 吗？", MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
-            {
-                HideMe(HideTo.Close);
-            }
-            else
-            {
-                CloseButton.Image = UnityResource.Close_0;
-                CloseButton.Invalidate();
-            }
+            TryToClose();
+            CloseButton.Image = UnityResource.Close_0;
+            CloseButton.Invalidate();
         }
 
         private void MinButton_Click(object sender, EventArgs e)
@@ -168,6 +181,21 @@ namespace Speleon_Client
         #region 功能函数
 
         /// <summary>
+        /// 询问用户是否退出
+        /// </summary>
+        private void TryToClose()
+        {
+            if (new MyMessageBox("真的要退出 Speleon 吗？", MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
+            {
+                HideMe(HideTo.ExitApp);
+            }
+            else
+            {
+                AllowToClose = false;
+            }
+        }
+
+        /// <summary>
         /// 动态隐藏方法
         /// </summary>
         /// <param name="hideTo">隐藏后的动作</param>
@@ -190,16 +218,87 @@ namespace Speleon_Client
                     this.Opacity = 1.0;
                     this.Top = IniTop;
                 }
-                else if (hideTo == HideTo.Close)
+                else if (hideTo == HideTo.JusetClose)
+                {
+                    UnityModule.DebugPrint("关闭ClientForm");
+                    AllowToClose = true;
+                    this.Close();
+                }
+                else if (hideTo == HideTo.ExitApp)
                 {
                     UnityModule.DebugPrint("退出程序");
                     AllowToClose = true;
-                    Application.Exit();
+                    ExitApplication();
                 }
             }));
         }
 
+        /// <summary>
+        /// 退出客户端
+        /// </summary>
+        private void ExitApplication()
+        {
+            try
+            {
+                UnitySocket?.Close();
+            }catch{}
+            try
+            {
+                ReceiveThread?.Abort();
+            }
+            catch {}
+            Application.Exit();
+        }
+
+        /// <summary>
+        /// 接收来自服务器的消息
+        /// </summary>
+        private void ReceiveMessage()
+        {
+            while (true)
+            {
+                try
+                {
+                    byte[] MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
+                    int MessageBufferSize = UnitySocket.Receive(MessageBuffer);
+                    string Message = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+
+                    UnityModule.DebugPrint("收到服务器的消息：{0}", Message);
+                    this.Invoke(new Action(() =>
+                    {
+                        new MyMessageBox(Message, "收到服务器的消息：").ShowDialog(this);
+                    }));
+                }
+                catch (ThreadAbortException) {return;}
+                catch (Exception ex)
+                {
+                    //todo:客户端，连接断开，需要重新连接/登录
+                    UnityModule.DebugPrint("接收消息时遇到错误：{0}", ex.Message);
+                    HideMe(HideTo.JusetClose);
+                    this.loginForm.Show();
+                    //"您的账号在其他地方登录，请注意密码安全！"
+                    return;
+                }
+            }
+        }
+
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (UnitySocket == null)
+            {
+                //Socket为空，需要初始化
+                //初始化失败时需要结束
+            }
+            if (!UnitySocket.Connected)
+            {
+                //Socket未连接，需要连接
+                //连接失败时需要结束
+            }
+
+            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.Message,Application.ProductVersion,"66666",textBox1.Text)));
+        }
 
     }
 }

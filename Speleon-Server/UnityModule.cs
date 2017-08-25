@@ -38,7 +38,7 @@ namespace Speleon_Server
         static public void DebugPrint(string DebugMessage)
         {
             string DebugInfo = string.Format("{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage);
-            (Application.OpenForms[0] as ServerForm).LogListBox.Items.Add(DebugInfo);
+            if (Application.OpenForms.Count>0) (Application.OpenForms[0] as ServerForm)?.LogListBox?.Items.Add(DebugInfo);
             Debug.Print("服务端："+DebugInfo);
         }
 

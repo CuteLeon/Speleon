@@ -96,6 +96,7 @@ namespace Speleon_Client
                     this.Hide();
                     this.Opacity = 1.0;
                     this.Top = IniTop;
+                    SignInButton.Text = "Sign In";
                 }
                 else if (hideTo == HideTo.Close)
                 {
@@ -173,7 +174,8 @@ namespace Speleon_Client
                     {
                         SignInButton.Text = "Success.";
                         this.Invalidate();
-                        new ClientForm().Show();
+                        UnityModule.USERID = UserIDTextBox.Text;
+                        new ClientForm() { loginForm =this}.Show();
                         HideMe(HideTo.JustHide);
                     }));
                 }
@@ -192,10 +194,13 @@ namespace Speleon_Client
                 UserIDTextBox.Enabled = true;
                 PasswordTextBox.Enabled = true;
                 this.Invalidate();
+
+                Logining = false;
             }
             catch (ThreadAbortException)
             {
                 //遇到线程中断异常时忽略，因为此异常由用户手动取消放弃登录任务。
+                return; 
             }
             catch (Exception ex)
             {

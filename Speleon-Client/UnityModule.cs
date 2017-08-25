@@ -11,6 +11,8 @@ namespace Speleon_Client
 {
     static class UnityModule
     {
+        static public string USERID = "";
+
         static public string ServerIP = "localhost";
         //static public string ServerIP = "server.ngrok.cc";
         static public int ServerPort = 17417;

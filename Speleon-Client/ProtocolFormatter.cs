@@ -13,6 +13,7 @@ namespace Speleon_Client
             SignIn,
             SignInSuccessfully,
             SignInUnsuccessfully,
+            WhoAmI,
             Message
         }
 
@@ -29,7 +30,7 @@ namespace Speleon_Client
             {
                 case CMDType.Message:
                     {
-                        return "";// "HEY_CVER=(?<clientversion>.+?)_CMDTYPE=(?<cmdtype>.+?)_USERID=(?<userid>.+?)_PASSWORD=(?<password>.+?)\n";
+                        return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                     }
                 default:
                     {
@@ -43,31 +44,48 @@ namespace Speleon_Client
         /// </summary>
         /// <param name="cmdType">协议类型</param>
         /// <returns>协议字符串</returns>
-        static public string FormatProtocol(CMDType cmdType,params object[] ProtocalValues)
+        static public string FormatProtocol(CMDType cmdType,params object[] ProtocolValues)
         {
-            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}",cmdType.ToString(),string.Join("/",ProtocalValues));
+            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}",cmdType.ToString(),string.Join("/",ProtocolValues));
             //每条协议最后加一个换行符，否则服务端无法使用正则匹配最后一个参数
+            string ProtocolString = "";
             try
             {
                 switch (cmdType)
                 {
+                    case CMDType.Message:
+                        {
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=MESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
+                            break;
+                        }
                     case CMDType.SignIn:
                         {
-                                return string.Format("HEY_CVER={0}_CMDTYPE=SIGNIN_USERID={1}_PASSWORD={2}\n", ProtocalValues[0], ProtocalValues[1], ProtocalValues[2]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=SIGNIN_USERID={1}_PASSWORD={2}\n", ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
+                            break;
                         }
                     case CMDType.SignInSuccessfully:
                         {
-                            return "HI_CMDTYPE=SIGNINSUCCESSFULLY";
+                            ProtocolString = "HI_CMDTYPE=SIGNINSUCCESSFULLY";
+                            break;
                         }
                     case CMDType.SignInUnsuccessfully:
                         {
-                            return "HI_CMDTYPE=SIGNINUNSUCCESSFULLY";
+                            ProtocolString = "HI_CMDTYPE=SIGNINUNSUCCESSFULLY";
+                            break;
+                        }
+                    case CMDType.WhoAmI:
+                        {
+                            ProtocolString = String.Format("HEY_CVER={0}_CMDTYPE=WHOAMI_USERID={1}\n", ProtocolValues[0], ProtocolValues[1]);
+                            break;
                         }
                     default:
                         {
-                            return "";
+                            ProtocolString = "";
+                            break;
                         }
                 }
+                UnityModule.DebugPrint("协议内容：{0}", ProtocolString);
+                return ProtocolString;
             }
             catch (Exception ex)
             {

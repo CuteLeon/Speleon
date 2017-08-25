@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.TitlePanel = new Speleon_Client.MyPanel();
             this.MinButton = new Speleon_Client.LabelButton();
             this.MaxButton = new Speleon_Client.LabelButton();
@@ -36,6 +38,26 @@
             this.CloseButton = new System.Windows.Forms.Label();
             this.TitlePanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(216, 327);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(180, 56);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "发送";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox1.Location = new System.Drawing.Point(164, 203);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(302, 101);
+            this.textBox1.TabIndex = 11;
+            this.textBox1.Text = "Hello world .";
             // 
             // TitlePanel
             // 
@@ -49,7 +71,7 @@
             this.TitlePanel.Location = new System.Drawing.Point(0, 0);
             this.TitlePanel.Margin = new System.Windows.Forms.Padding(0);
             this.TitlePanel.Name = "TitlePanel";
-            this.TitlePanel.Size = new System.Drawing.Size(640, 85);
+            this.TitlePanel.Size = new System.Drawing.Size(640, 32);
             this.TitlePanel.TabIndex = 0;
             // 
             // MinButton
@@ -61,7 +83,7 @@
             this.MinButton.Location = new System.Drawing.Point(505, 0);
             this.MinButton.Margin = new System.Windows.Forms.Padding(0);
             this.MinButton.Name = "MinButton";
-            this.MinButton.Size = new System.Drawing.Size(32, 85);
+            this.MinButton.Size = new System.Drawing.Size(32, 32);
             this.MinButton.TabIndex = 9;
             this.MinButton.Tag = "Min";
             this.MinButton.Click += new System.EventHandler(this.MinButton_Click);
@@ -75,7 +97,7 @@
             this.MaxButton.Location = new System.Drawing.Point(537, 0);
             this.MaxButton.Margin = new System.Windows.Forms.Padding(0);
             this.MaxButton.Name = "MaxButton";
-            this.MaxButton.Size = new System.Drawing.Size(32, 85);
+            this.MaxButton.Size = new System.Drawing.Size(32, 32);
             this.MaxButton.TabIndex = 8;
             this.MaxButton.Tag = "Max";
             this.MaxButton.Click += new System.EventHandler(this.MaxButton_Click);
@@ -89,7 +111,7 @@
             this.RestoreButton.Location = new System.Drawing.Point(569, 0);
             this.RestoreButton.Margin = new System.Windows.Forms.Padding(0);
             this.RestoreButton.Name = "RestoreButton";
-            this.RestoreButton.Size = new System.Drawing.Size(32, 85);
+            this.RestoreButton.Size = new System.Drawing.Size(32, 32);
             this.RestoreButton.TabIndex = 7;
             this.RestoreButton.Tag = "Restore";
             this.RestoreButton.Visible = false;
@@ -104,7 +126,7 @@
             this.TitleLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.TitleLabel.Location = new System.Drawing.Point(0, 0);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(113, 85);
+            this.TitleLabel.Size = new System.Drawing.Size(113, 32);
             this.TitleLabel.TabIndex = 6;
             this.TitleLabel.Text = "Speleon";
             this.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -118,7 +140,7 @@
             this.CloseButton.Location = new System.Drawing.Point(601, 0);
             this.CloseButton.Margin = new System.Windows.Forms.Padding(0);
             this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(39, 85);
+            this.CloseButton.Size = new System.Drawing.Size(39, 32);
             this.CloseButton.TabIndex = 4;
             this.CloseButton.Tag = "Close";
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
@@ -128,6 +150,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 500);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.TitlePanel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -140,6 +164,7 @@
             this.Resize += new System.EventHandler(this.ClientForm_Resize);
             this.TitlePanel.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -151,5 +176,7 @@
         private LabelButton RestoreButton;
         private LabelButton MaxButton;
         private LabelButton MinButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

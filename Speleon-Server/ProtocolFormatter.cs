@@ -16,7 +16,17 @@ namespace Speleon_Server
             SignIn,
             SignInSuccessfully,
             SignInUnsuccessfully,
+            WhoAmI,
             Message
+        }
+
+        /// <summary>
+        /// 返回获取CMDTYPE的正则表达式
+        /// </summary>
+        /// <returns></returns>
+        static public string GetCMDTypePattern()
+        {
+            return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_";
         }
 
         /// <summary>
@@ -27,17 +37,34 @@ namespace Speleon_Server
         static public string GetProtocolPattern(CMDType cmdType)
         {
             UnityModule.DebugPrint("开始获取协议正则表达式：{0}", cmdType.ToString());
+            string ProtocolString = "";
             //每条协议最后使用换行符结束
-            switch (cmdType)
+            try
             {
-                case CMDType.SignIn:
-                    {
-                        return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
-                    }
-                default:
-                    {
-                        return "";
-                    }
+                switch (cmdType)
+                {
+                    case CMDType.SignIn:
+                        {
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
+                            break;
+                        }
+                    case CMDType.WhoAmI:
+                        {
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)\n";
+                            break;
+                        }
+                    default:
+                        {
+                            return "";
+                        }
+                }
+                UnityModule.DebugPrint("协议正则表达式：{0}", ProtocolString);
+                return ProtocolString;
+            }
+            catch (Exception ex)
+            {
+                UnityModule.DebugPrint("获取 {0} 协议正则表达式时遇到错误：{1}",cmdType.ToString(),ex.Message);
+                return "";
             }
         }
 
