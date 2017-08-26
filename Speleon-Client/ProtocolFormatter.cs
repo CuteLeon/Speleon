@@ -69,9 +69,9 @@ namespace Speleon_Client
         /// </summary>
         /// <param name="cmdType">协议类型</param>
         /// <returns>协议字符串</returns>
-        static public string FormatProtocol(CMDType cmdType,params object[] ProtocolValues)
+        static public string FormatProtocol(CMDType cmdType,params string[] ProtocolValues)
         {
-            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}",cmdType.ToString(),string.Join("/",ProtocolValues));
+            UnityModule.DebugPrint("开始格式化通信协议：{0} : {1}", cmdType.ToString(), string.Join(" + ", ProtocolValues));
             //每条协议最后加一个换行符，否则服务端无法使用正则匹配最后一个参数
             string ProtocolString = "";
             try
@@ -80,7 +80,7 @@ namespace Speleon_Client
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=CHATMESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=CHATMESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[2])));
                             break;
                         }
                     case CMDType.SignIn:

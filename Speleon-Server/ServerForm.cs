@@ -93,6 +93,14 @@ namespace Speleon_Server
 
         private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            foreach (Thread clientThread in ReceiveThreadDictionary.Values)
+            {
+                clientThread.Abort();
+            }
+            foreach (Socket clientSocket in SocketsDictionary.Values)
+            {
+                clientSocket.Close();
+            }
             ServerSocket?.Close();
             ListenThread?.Abort();
             UnityDBControl.CloseConnection();
@@ -215,7 +223,7 @@ namespace Speleon_Server
                                 USERID = MessageMatchResult.Groups["USERID"].Value;
                                 if (SocketsDictionary.ContainsKey(USERID))
                                 {
-                                    UnityModule.DebugPrint("用户 {0} 已经在 {1} 登录，即将被顶下线...", USERID, SocketsDictionary[USERID]);
+                                    UnityModule.DebugPrint("用户 {0} 已经在 {1} 登录，即将被顶下线...", USERID, SocketsDictionary[USERID].RemoteEndPoint.ToString());
                                     //todo:用户异地登录，被顶下线，发送下线命令，释放Socket和Thread，并赋值新的Socket和Thread
                                     Socket TempSocket = SocketsDictionary[USERID];
                                     TempSocket.Send(Encoding.UTF8.GetBytes( ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.AnothorSignIn,USERID)));
@@ -232,7 +240,7 @@ namespace Speleon_Server
                                 ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
                                     "ServerSystem", "你好,\n欢迎登录 Speleon !")));
 
-                                UnityModule.DebugPrint("用户 {0} 上线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
+                                UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID,ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
                                 break;
                             }
                         default:

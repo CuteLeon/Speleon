@@ -354,7 +354,7 @@ namespace Speleon_Client
                 //连接失败时需要结束
             }
 
-            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",Convert.ToBase64String(Encoding.UTF8.GetBytes(textBox1.Text)))));
+            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",textBox1.Text)));
         }
 
     }

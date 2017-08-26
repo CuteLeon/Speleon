@@ -54,6 +54,12 @@
     <Compile Include="ClientForm.Designer.cs">
       <DependentUpon>ClientForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FriendItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FriendItem.Designer.cs">
+      <DependentUpon>FriendItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="LabelButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -86,6 +92,9 @@
     </Compile>
     <EmbeddedResource Include="ClientForm.resx">
       <DependentUpon>ClientForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FriendItem.resx">
+      <DependentUpon>FriendItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LabelButton.resx">
       <DependentUpon>LabelButton.cs</DependentUpon>

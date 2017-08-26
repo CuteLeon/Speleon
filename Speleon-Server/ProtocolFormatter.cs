@@ -98,9 +98,9 @@ namespace Speleon_Server
         /// </summary>
         /// <param name="cmdType">协议类型</param>
         /// <returns>协议字符串</returns>
-        static public string FormatProtocol(CMDType cmdType, params object[] ProtocolValues)
+        static public string FormatProtocol(CMDType cmdType, params string[] ProtocolValues)
         {
-            UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}", cmdType.ToString(), string.Join("/", ProtocolValues));
+            UnityModule.DebugPrint("开始格式化通信协议：{0} : {1}", cmdType.ToString(), string.Join(" + ", ProtocolValues));
             string ProtocolString=null;
             //每条协议最后加一个换行符，否则服务端无法使用正则匹配最后一个参数
             try
@@ -109,22 +109,22 @@ namespace Speleon_Server
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0] as string,Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1] as string)));
+                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0],Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])));
                             break;
                         }
                     case CMDType.SignInSuccessfully:
                         {
-                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0] as string);
+                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
                     case CMDType.SignInUnsuccessfully:
                         {
-                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0] as string);
+                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0]);
                             break;
                         }
                     case CMDType.AnothorSignIn:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=ANOTHORSIGNIN_USERID={0}\n",ProtocolValues[0] as string);
+                            ProtocolString = string.Format("HI_CMDTYPE=ANOTHORSIGNIN_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
                     default:
