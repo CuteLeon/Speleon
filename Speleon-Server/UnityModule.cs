@@ -38,7 +38,17 @@ namespace Speleon_Server
         static public void DebugPrint(string DebugMessage)
         {
             string DebugInfo = string.Format("{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage);
-            if (Application.OpenForms.Count>0) (Application.OpenForms[0] as ServerForm)?.LogListBox?.Items.Add(DebugInfo);
+            if (Application.OpenForms.Count > 0)
+            {
+                if (Application.OpenForms[0] != null)
+                {
+                    if ((Application.OpenForms[0]) as ServerForm != null)
+                    {
+                        ((Application.OpenForms[0]) as ServerForm).LogListBox.Items.Add(DebugInfo);
+                        ((Application.OpenForms[0]) as ServerForm).LogListBox.SelectedIndex = (((Application.OpenForms[0]) as ServerForm).LogListBox.Items.Count - 1);
+                    }
+                }
+            }
             Debug.Print("服务端："+DebugInfo);
         }
 

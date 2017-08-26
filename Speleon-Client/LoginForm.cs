@@ -74,7 +74,7 @@ namespace Speleon_Client
         /// <param name="hideTo">隐藏后的动作</param>
         private void HideMe(HideTo hideTo)
         {
-            UnityModule.DebugPrint("开始动态隐藏窗体...");
+            UnityModule.DebugPrint("开始动态隐藏窗体...{0}",this.Name);
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
                 int IniTop = this.Top;
                 while (this.Opacity>0)
@@ -269,6 +269,7 @@ namespace Speleon_Client
             TitleLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
             LoginAreaLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
 
+            UserIDTextBox.SelectionLength = 0;
             UnityModule.DebugPrint("窗体加载成功");
         }
 

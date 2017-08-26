@@ -140,8 +140,8 @@ namespace Speleon_Server
                     //todo:断开与客户端的连接，需要将用户置为离线
                     if(USERID!="" && SocketsDictionary.ContainsKey(USERID))
                         SocketsDictionary.Remove(USERID);
-                    if(ReceiveThreadDictionary.ContainsKey(ClientSocket.RemoteEndPoint.ToString()))
-                        ReceiveThreadDictionary.Remove(ClientSocket.RemoteEndPoint.ToString());
+                    if(ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
+                        ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
                     UnityModule.DebugPrint("用户 {0} 下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
 
                     ClientSocket?.Close();
@@ -205,8 +205,8 @@ namespace Speleon_Server
                                 }
 
                                 //以USERID为KEY，记录Socket
-                                ClientSocket.Send(Encoding.UTF8.GetBytes("很高兴连接你！"));
                                 SocketsDictionary.Add(USERID, ClientSocket);
+                                ClientSocket.Send(Encoding.UTF8.GetBytes("你好，"+ USERID + "，我是服务端。"));
                                 UnityModule.DebugPrint("用户 {0} 上线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
                                 break;
                             }
