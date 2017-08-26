@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -261,13 +262,49 @@ namespace Speleon_Client
                 {
                     byte[] MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
                     int MessageBufferSize = UnitySocket.Receive(MessageBuffer);
-                    string Message = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+                    string ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
 
-                    UnityModule.DebugPrint("收到服务器的消息：{0}", Message);
-                    this.Invoke(new Action(() =>
+                    UnityModule.DebugPrint("收到服务器的消息：{0}", ServerMessage);
+
+                    string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
+                    Regex MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    Match MessageMatchResult = MessageRegex.Match(ServerMessage);
+                    string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
+                    UnityModule.DebugPrint("收到 CMDTYPE : {0}", cmdType);
+
+                    switch (cmdType)
                     {
-                        new MyMessageBox(Message, "收到服务器的消息：").ShowDialog(this);
-                    }));
+                        case "ANOTHORSIGNIN":
+                            {
+                                this.Invoke(new Action(() =>
+                                {
+                                    //todo:显示账号异地登录告警提示
+                                    HideMe(HideTo.JusetClose);
+                                    this.loginForm.Show();
+                                    loginForm.Text = "您的账号异地登录，请注意账号安全！";
+                                }));
+                                
+                                //这里需要 return; 否则会进入 catch(){} 被当做异常处理
+                                return;
+                            }
+                        case "CHATMESSAGE":
+                            {
+                                //todo:正则匹配聊天消息
+                                this.Invoke(new Action(() =>
+                                {
+                                    new MyMessageBox(ServerMessage, MyMessageBox.IconType.Info).Show(this);
+                                }));
+                                break;
+                            }
+                        default:
+                            {
+                                this.Invoke(new Action(() =>
+                                {
+                                    new MyMessageBox("遇到未知的 CMDTYPE : " + cmdType, MyMessageBox.IconType.Info).Show(this);
+                                }));
+                                break;
+                            }
+                    }
                 }
                 catch (ThreadAbortException) {return;}
                 catch (Exception ex)
@@ -276,6 +313,7 @@ namespace Speleon_Client
                     UnityModule.DebugPrint("接收消息时遇到错误：{0}", ex.Message);
                     HideMe(HideTo.JusetClose);
                     this.loginForm.Show();
+                    this.loginForm.Text="Exception";
                     //"您的账号在其他地方登录，请注意密码安全！"
                     return;
                 }
@@ -297,7 +335,7 @@ namespace Speleon_Client
                 //连接失败时需要结束
             }
 
-            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.Message,Application.ProductVersion,"66666",textBox1.Text)));
+            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",textBox1.Text)));
         }
 
     }

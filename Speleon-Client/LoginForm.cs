@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -161,33 +162,42 @@ namespace Speleon_Client
                 //发送登录协议
                 LoginSocket.Send(Encoding.ASCII.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignIn, Application.ProductVersion, UserIDTextBox.Text, PasswordTextBox.Text)));
                 //接收登录验证结果
-                byte[] SignResultBytes = new byte[1024];
+                byte[] SignResultBytes = new byte[LoginSocket.ReceiveBufferSize-1];
                 LoginSocket.Receive(SignResultBytes);
                 string SignResult = Encoding.ASCII.GetString(SignResultBytes).Trim('\0');
                 UnityModule.DebugPrint("接收到登录结果：{0}", SignResult);
 
-                //判断登录验证结果
-                if (SignResult.StartsWith(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.SignInSuccessfully)))
+                string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
+                Regex MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                Match MessageMatchResult = MessageRegex.Match(SignResult);
+                string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
+                switch (cmdType)
                 {
-                    //登录成功，切换界面
-                    this.Invoke(new Action(() =>
-                    {
-                        SignInButton.Text = "Success.";
-                        this.Invalidate();
-                        UnityModule.USERID = UserIDTextBox.Text;
-                        new ClientForm() { loginForm =this}.Show();
-                        HideMe(HideTo.JustHide);
-                    }));
+                    case "SIGNINSUCCESSFULLY":
+                        {
+                            //登录成功，切换界面
+                            this.Invoke(new Action(() =>
+                            {
+                                SignInButton.Text = "Success.";
+                                this.Invalidate();
+                                UnityModule.USERID = UserIDTextBox.Text;
+                                new ClientForm() { loginForm = this }.Show();
+                                HideMe(HideTo.JustHide);
+                            }));
+                            break;
+                        }
+                    case "SIGNINUNSUCCESSFULLY":
+                        {
+                            //登录失败
+                            this.Invoke(new Action(() =>
+                            {
+                                new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this);
+                                SignInButton.Text = "Sign In";
+                            }));
+                            break;
+                        }
                 }
-                else
-                {
-                    //登录失败
-                    this.Invoke(new Action(() =>
-                    {
-                        new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this);
-                        SignInButton.Text = "Sign In";
-                    }));
-                }
+
                 LoginSocket?.Close();
                 UnityModule.DebugPrint("验证登录TCP连接已经关闭 ...");
 

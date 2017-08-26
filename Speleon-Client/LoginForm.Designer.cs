@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ActiveBGIBOX = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.LoginAreaLabel = new System.Windows.Forms.Label();
@@ -36,6 +37,7 @@
             this.MinButton = new Speleon_Client.LabelButton();
             this.CloseButton = new Speleon_Client.LabelButton();
             this.SignInButton = new Speleon_Client.LabelButton();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).BeginInit();
             this.SuspendLayout();
             // 
@@ -160,6 +162,7 @@
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Speleon-Login";
+            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.LoginForm_Paint);
@@ -179,6 +182,7 @@
         private System.Windows.Forms.Label LoginAreaLabel;
         private System.Windows.Forms.TextBox UserIDTextBox;
         private System.Windows.Forms.TextBox PasswordTextBox;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

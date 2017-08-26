@@ -195,7 +195,7 @@ namespace Speleon_Server
                                     UnityModule.DebugPrint("用户 {0} 已经在 {1} 登录，即将被顶下线...", USERID, SocketsDictionary[USERID]);
                                     //todo:用户异地登录，被顶下线，发送下线命令，释放Socket和Thread，并赋值新的Socket和Thread
                                     Socket TempSocket = SocketsDictionary[USERID];
-
+                                    TempSocket.Send(Encoding.UTF8.GetBytes( ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.AnothorSignIn,USERID)));
                                     Thread TempThread = ReceiveThreadDictionary[TempSocket.RemoteEndPoint.ToString()];
                                     ReceiveThreadDictionary.Remove(TempSocket.RemoteEndPoint.ToString());
                                     TempThread.Abort();

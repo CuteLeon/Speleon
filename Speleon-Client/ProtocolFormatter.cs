@@ -8,13 +8,33 @@ namespace Speleon_Client
 {
     static class ProtocolFormatter
     {
+
         public enum CMDType
         {
+            /// <summary>
+            /// 异地登录
+            /// </summary>
+            AnothorSignIn,
+            /// <summary>
+            /// 登录
+            /// </summary>
             SignIn,
+            /// <summary>
+            /// 登录成功
+            /// </summary>
             SignInSuccessfully,
+            /// <summary>
+            /// 登录失败
+            /// </summary>
             SignInUnsuccessfully,
+            /// <summary>
+            /// 用户报告
+            /// </summary>
             WhoAmI,
-            Message
+            /// <summary>
+            /// 聊天消息
+            /// </summary>
+            ChatMessage
         }
 
         /// <summary>
@@ -28,7 +48,7 @@ namespace Speleon_Client
             //每条协议最后使用换行符结束
             switch (cmdType)
             {
-                case CMDType.Message:
+                case CMDType.ChatMessage:
                     {
                         return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                     }
@@ -53,7 +73,7 @@ namespace Speleon_Client
             {
                 switch (cmdType)
                 {
-                    case CMDType.Message:
+                    case CMDType.ChatMessage:
                         {
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=MESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
                             break;
@@ -61,16 +81,6 @@ namespace Speleon_Client
                     case CMDType.SignIn:
                         {
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=SIGNIN_USERID={1}_PASSWORD={2}\n", ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
-                            break;
-                        }
-                    case CMDType.SignInSuccessfully:
-                        {
-                            ProtocolString = "HI_CMDTYPE=SIGNINSUCCESSFULLY";
-                            break;
-                        }
-                    case CMDType.SignInUnsuccessfully:
-                        {
-                            ProtocolString = "HI_CMDTYPE=SIGNINUNSUCCESSFULLY";
                             break;
                         }
                     case CMDType.WhoAmI:
@@ -92,6 +102,15 @@ namespace Speleon_Client
                 UnityModule.DebugPrint("获取 {0} 通信协议时遇到错误：{1}",cmdType.ToString(),ex.Message);
                 return "";
             }
+        }
+
+        /// <summary>
+        /// 返回获取CMDTYPE的正则表达式
+        /// </summary>
+        /// <returns></returns>
+        static public string GetCMDTypePattern()
+        {
+            return "HI_CMDTYPE=(?<CMDTYPE>.+?)_";
         }
 
     }
