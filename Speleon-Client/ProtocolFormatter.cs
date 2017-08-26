@@ -45,18 +45,23 @@ namespace Speleon_Client
         static public string GetProtocolPattern(CMDType cmdType)
         {
             UnityModule.DebugPrint("开始获取协议正则表达式：{0}", cmdType.ToString());
+            string ProtocolString = null;
             //每条协议最后使用换行符结束
             switch (cmdType)
             {
                 case CMDType.ChatMessage:
                     {
-                        return "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
+                        ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
+                        break;
                     }
                 default:
                     {
-                        return "";
+                        ProtocolString = "";
+                        break;
                     }
             }
+            UnityModule.DebugPrint("协议正则表达式：{0}", ProtocolString);
+            return ProtocolString;
         }
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace Speleon_Client
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=MESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=CHATMESSAGE_TOID={1}_MESSAGE={2}\n",ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
                             break;
                         }
                     case CMDType.SignIn:

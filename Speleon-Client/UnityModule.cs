@@ -58,7 +58,7 @@ namespace Speleon_Client
         /// <param name="DebugMessage">调试信息</param>
         static public void DebugPrint(string DebugMessage)
         {
-            Debug.Print(string.Format("客户端：{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage));
+            Debug.Print(string.Format("！@客户端：{0}    {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), DebugMessage));
         }
 
         /// <summary>

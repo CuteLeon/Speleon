@@ -15,6 +15,17 @@ namespace Speleon_Client
 {
     public partial class ClientForm : Form
     {
+        /*注意！
+         * 
+         * 1>.双方Socket收发缓存区为64KB，这是包括按UTF8编码转换为BASE64编码(BASE64的字节数为原编码消息长度的5/4，
+         * 即增加25%)后的消息加上自己规定的协议的最大长度，在客户端发送消息时需要限制用户文本框输入的字符数尽量不要超
+         * 过16000个汉字，其实聊天也足够用了
+         * 虽然TCP协议也会自己给消息截段，但是非头的段没有我们自己规定的协议头，会导致客户端无法判断消息的类型
+         * 
+         * 2>.消息内容内可能包含'\n'会与双方匹配消息内容的正则表达式冲突，所以需要先转换消息内容为BASE64编码，以屏蔽'\n'，
+         * 或在发送消息的协议最后加上"'\n''\0'"，而正则表达式也以"'\n''\0'"结束即可
+         */
+
         #region 变量和枚举
 
         /// <summary>
@@ -248,6 +259,7 @@ namespace Speleon_Client
                 ReceiveThread?.Abort();
             }
             catch {}
+            this.Close();
             Application.Exit();
         }
 
@@ -290,9 +302,16 @@ namespace Speleon_Client
                         case "CHATMESSAGE":
                             {
                                 //todo:正则匹配聊天消息
+                                string FromID=null,Message = null;
+                                MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
+                                MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                FromID = MessageMatchResult.Groups["FROMID"].Value.ToString();
+                                Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value.ToString()));
+
                                 this.Invoke(new Action(() =>
                                 {
-                                    new MyMessageBox(ServerMessage, MyMessageBox.IconType.Info).Show(this);
+                                    new MyMessageBox(Message, "来自：" + FromID,MyMessageBox.IconType.Info).Show(this);
                                 }));
                                 break;
                             }

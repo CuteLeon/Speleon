@@ -157,6 +157,17 @@ namespace Speleon_Server
                     string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
                     switch (cmdType)
                     {
+                        case "CHATMESSAGE":
+                            {
+                                MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
+                                MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                MessageMatchResult = MessageRegex.Match(ClientMessage);
+                                string ToID = MessageMatchResult.Groups["TOID"].Value;
+                                string Message = MessageMatchResult.Groups["MESSAGE"].Value;
+                                UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}",USERID,ToID,Message);
+                                //todo:转发消息
+                                break;
+                            }
                         case "SIGNIN":
                             {
                                 //用户登录消息
@@ -206,14 +217,17 @@ namespace Speleon_Server
 
                                 //以USERID为KEY，记录Socket
                                 SocketsDictionary.Add(USERID, ClientSocket);
-                                ClientSocket.Send(Encoding.UTF8.GetBytes("你好，"+ USERID + "，我是服务端。"));
+                                ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
+                                    "ServerSystem", "你好,\n欢迎登录 Speleon !")));
+
                                 UnityModule.DebugPrint("用户 {0} 上线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
                                 break;
                             }
                         default:
                             {
                                 UnityModule.DebugPrint("遇到未知消息：{0}", ClientMessage);
-                                ClientSocket.Send(Encoding.ASCII.GetBytes("HI_CMDTYPE=MESSAGE_MESSAGE=WTF!!!"));
+                                ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
+                                    "ServerSystem", "服务端收到你发来未知的CMDTYPE："+cmdType + "\n" + ClientMessage)));
                                 break;
                             }
                     }

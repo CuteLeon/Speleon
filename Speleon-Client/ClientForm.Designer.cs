@@ -41,9 +41,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(216, 327);
+            this.button1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button1.Location = new System.Drawing.Point(520, 32);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(180, 56);
+            this.button1.Size = new System.Drawing.Size(120, 154);
             this.button1.TabIndex = 10;
             this.button1.Text = "发送";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,11 +52,12 @@
             // 
             // textBox1
             // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.textBox1.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(164, 203);
+            this.textBox1.Location = new System.Drawing.Point(0, 32);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(302, 101);
+            this.textBox1.Size = new System.Drawing.Size(520, 154);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "Hello world .";
             // 
@@ -126,9 +128,9 @@
             this.TitleLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.TitleLabel.Location = new System.Drawing.Point(0, 0);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(113, 32);
+            this.TitleLabel.Size = new System.Drawing.Size(173, 32);
             this.TitleLabel.TabIndex = 6;
-            this.TitleLabel.Text = "Speleon";
+            this.TitleLabel.Text = "Speleon-Client";
             this.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // CloseButton
@@ -149,7 +151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(640, 500);
+            this.ClientSize = new System.Drawing.Size(640, 186);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.TitlePanel);

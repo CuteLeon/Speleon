@@ -62,19 +62,25 @@ namespace Speleon_Server
             {
                 switch (cmdType)
                 {
+                    case CMDType.ChatMessage:
+                        {
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=CHATMESSAGE_TOID=(?<TOID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
+                            break;
+                        }
                     case CMDType.SignIn:
                         {
-                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=SIGNIN_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
                             break;
                         }
                     case CMDType.WhoAmI:
                         {
-                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=(?<CMDTYPE>.+?)_USERID=(?<USERID>.+?)\n";
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=WHOAMI_USERID=(?<USERID>.+?)\n";
                             break;
                         }
                     default:
                         {
-                            return "";
+                            ProtocolString = "";
+                            break;
                         }
                 }
                 UnityModule.DebugPrint("协议正则表达式：{0}", ProtocolString);
@@ -95,6 +101,7 @@ namespace Speleon_Server
         static public string FormatProtocol(CMDType cmdType, params object[] ProtocolValues)
         {
             UnityModule.DebugPrint("开始格式化通信协议：{0}-{1}", cmdType.ToString(), string.Join("/", ProtocolValues));
+            string ProtocolString=null;
             //每条协议最后加一个换行符，否则服务端无法使用正则匹配最后一个参数
             try
             {
@@ -102,25 +109,32 @@ namespace Speleon_Server
                 {
                     case CMDType.ChatMessage:
                         {
-                            return string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}",ProtocolValues[0] as string);
+                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0] as string,Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1] as string)));
+                            break;
                         }
                     case CMDType.SignInSuccessfully:
                         {
-                            return String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0] as string);
+                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0] as string);
+                            break;
                         }
                     case CMDType.SignInUnsuccessfully:
                         {
-                            return String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0] as string);
+                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0] as string);
+                            break;
                         }
                     case CMDType.AnothorSignIn:
                         {
-                            return string.Format("HI_CMDTYPE=ANOTHORSIGNIN_USERID={0}\n",ProtocolValues[0] as string);
+                            ProtocolString = string.Format("HI_CMDTYPE=ANOTHORSIGNIN_USERID={0}\n",ProtocolValues[0] as string);
+                            break;
                         }
                     default:
                         {
-                            return "";
+                            ProtocolString = "";
+                            break;
                         }
                 }
+                UnityModule.DebugPrint("协议内容：{0}", ProtocolString);
+                return ProtocolString;
             }
             catch (Exception ex)
             {
@@ -128,5 +142,6 @@ namespace Speleon_Server
                 return "";
             }
         }
+
     }
 }
