@@ -163,9 +163,21 @@ namespace Speleon_Server
                                 MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                 MessageMatchResult = MessageRegex.Match(ClientMessage);
                                 string ToID = MessageMatchResult.Groups["TOID"].Value;
-                                string Message = MessageMatchResult.Groups["MESSAGE"].Value;
+                                string Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value as string));
                                 UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}",USERID,ToID,Message);
                                 //todo:转发消息
+
+                                //判断对方是否连接
+                                if (SocketsDictionary.ContainsKey(ToID))
+                                {
+                                    //todo:把消息储存进数据库
+                                    SocketsDictionary[ToID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage, USERID, Message)));
+                                }
+                                else
+                                {
+                                    //todo:判断用户是否注册？=>把消息寄存在数据库，未发送标志记为真，等待用户上线发送给用户
+                                }
+
                                 break;
                             }
                         case "SIGNIN":
