@@ -28,13 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.ActiveBGIBOX = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.LoginAreaLabel = new System.Windows.Forms.Label();
             this.UserIDTextBox = new System.Windows.Forms.TextBox();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ControlPanel = new Speleon_Client.MyPanel();
             this.SignInButton = new Speleon_Client.LabelButton();
             this.MinButton = new Speleon_Client.LabelButton();
@@ -232,7 +230,6 @@
         private System.Windows.Forms.Label LoginAreaLabel;
         private System.Windows.Forms.TextBox UserIDTextBox;
         private System.Windows.Forms.TextBox PasswordTextBox;
-        private System.Windows.Forms.ToolTip toolTip1;
         private MyPanel TipsPanel;
         private MyPanel ControlPanel;
         private LabelButton TipsClsoeButton;

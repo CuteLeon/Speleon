@@ -114,6 +114,20 @@ namespace Speleon_Client
         bool Logining = false;
         private void SignInButton_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(UserIDTextBox.Text))
+            {
+                ShowTips("请输入用户名！");
+                UserIDTextBox.Focus();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(PasswordTextBox.Text))
+            {
+                ShowTips("请输入密码！");
+                PasswordTextBox.Focus();
+                return;
+            }
+
             if (!Logining)
             {
                 //开始登录
@@ -196,6 +210,7 @@ namespace Speleon_Client
                             {
                                 ShowTips("您的密码输入错误，请重试！");
                                 SignInButton.Text = "Sign In";
+                                PasswordTextBox.Focus();
                             }));
                             break;
                         }
