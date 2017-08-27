@@ -308,7 +308,7 @@ namespace Speleon_Client
                 {
                     try
                     {
-                        if (string.IsNullOrEmpty(TempServerMessage)) break;
+                        if (string.IsNullOrEmpty(TempServerMessage)) continue;
 
                         string ServerMessage = TempServerMessage + '\n';
                         UnityModule.DebugPrint("ServerMessage : {0}", ServerMessage);
