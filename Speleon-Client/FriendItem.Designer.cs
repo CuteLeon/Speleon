@@ -28,19 +28,67 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FriendItem));
+            this.HeadPortraitLabel = new System.Windows.Forms.Label();
+            this.SignaturLabel = new System.Windows.Forms.Label();
+            this.NickNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // HeadPortraitLabel
+            // 
+            this.HeadPortraitLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.HeadPortraitLabel.Image = ((System.Drawing.Image)(resources.GetObject("HeadPortraitLabel.Image")));
+            this.HeadPortraitLabel.Location = new System.Drawing.Point(6, 6);
+            this.HeadPortraitLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.HeadPortraitLabel.MaximumSize = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.MinimumSize = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.Name = "HeadPortraitLabel";
+            this.HeadPortraitLabel.Size = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.TabIndex = 0;
+            // 
+            // SignaturLabel
+            // 
+            this.SignaturLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.SignaturLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.SignaturLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.SignaturLabel.Location = new System.Drawing.Point(54, 30);
+            this.SignaturLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.SignaturLabel.Name = "SignaturLabel";
+            this.SignaturLabel.Size = new System.Drawing.Size(170, 24);
+            this.SignaturLabel.TabIndex = 2;
+            this.SignaturLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // NickNameLabel
+            // 
+            this.NickNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.NickNameLabel.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NickNameLabel.Location = new System.Drawing.Point(54, 6);
+            this.NickNameLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.NickNameLabel.Name = "NickNameLabel";
+            this.NickNameLabel.Size = new System.Drawing.Size(170, 24);
+            this.NickNameLabel.TabIndex = 4;
+            this.NickNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FriendItem
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.Controls.Add(this.NickNameLabel);
+            this.Controls.Add(this.SignaturLabel);
+            this.Controls.Add(this.HeadPortraitLabel);
+            this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "FriendItem";
-            this.Padding = new System.Windows.Forms.Padding(5);
-            this.Size = new System.Drawing.Size(230, 72);
+            this.Padding = new System.Windows.Forms.Padding(6);
+            this.Size = new System.Drawing.Size(230, 60);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Label HeadPortraitLabel;
+        private System.Windows.Forms.Label SignaturLabel;
+        private System.Windows.Forms.Label NickNameLabel;
     }
 }

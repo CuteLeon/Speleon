@@ -139,16 +139,17 @@
             this.FriendsFlowPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.FriendsFlowPanel.Location = new System.Drawing.Point(0, 65);
             this.FriendsFlowPanel.Name = "FriendsFlowPanel";
-            this.FriendsFlowPanel.Size = new System.Drawing.Size(173, 435);
+            this.FriendsFlowPanel.Size = new System.Drawing.Size(230, 435);
             this.FriendsFlowPanel.TabIndex = 12;
+            this.FriendsFlowPanel.WrapContents = false;
             // 
             // MainPanel
             // 
             this.MainPanel.Controls.Add(this.SendChatPanel);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainPanel.Location = new System.Drawing.Point(173, 65);
+            this.MainPanel.Location = new System.Drawing.Point(230, 65);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(547, 435);
+            this.MainPanel.Size = new System.Drawing.Size(490, 435);
             this.MainPanel.TabIndex = 16;
             // 
             // SendChatPanel
@@ -158,7 +159,7 @@
             this.SendChatPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.SendChatPanel.Location = new System.Drawing.Point(0, 356);
             this.SendChatPanel.Name = "SendChatPanel";
-            this.SendChatPanel.Size = new System.Drawing.Size(547, 79);
+            this.SendChatPanel.Size = new System.Drawing.Size(490, 79);
             this.SendChatPanel.TabIndex = 15;
             // 
             // textBox1
@@ -168,14 +169,14 @@
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(446, 79);
+            this.textBox1.Size = new System.Drawing.Size(389, 79);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "Hello world .";
             // 
             // button1
             // 
             this.button1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button1.Location = new System.Drawing.Point(446, 0);
+            this.button1.Location = new System.Drawing.Point(389, 0);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(101, 79);
             this.button1.TabIndex = 10;

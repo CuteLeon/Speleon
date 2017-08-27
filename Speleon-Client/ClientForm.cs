@@ -275,14 +275,30 @@ namespace Speleon_Client
         {
             while (true)
             {
+                byte[] MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
+                int MessageBufferSize = UnitySocket.Receive(MessageBuffer);
+                string ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+
                 try
                 {
-                    byte[] MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
-                    int MessageBufferSize = UnitySocket.Receive(MessageBuffer);
-                    string ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+                    MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
+                    MessageBufferSize = UnitySocket.Receive(MessageBuffer);
+                    ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+                }
+                catch (ThreadAbortException) { return; }
+                catch (Exception ex)
+                {
+                    UnityModule.DebugPrint("接收消息时遇到错误：{0}", ex.Message);
+                    HideMe(HideTo.JusetClose);
+                    this.loginForm.Show();
+                    this.loginForm.ShowTips("与服务器连接中断，请检查网络连接。" + Convert.ToString(ex.HResult, 16));
+                    return;
+                }
 
+                try
+                {
                     UnityModule.DebugPrint("收到服务器的消息：{0}", ServerMessage);
-
+                    MessageBox.Show(ServerMessage);
                     string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
                     Regex MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                     Match MessageMatchResult = MessageRegex.Match(ServerMessage);
@@ -293,7 +309,6 @@ namespace Speleon_Client
                     {
                         case "CHATMESSAGE":
                             {
-                                //todo:正则匹配聊天消息
                                 string FromID=null,Message = null;
                                 MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
                                 MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -320,7 +335,7 @@ namespace Speleon_Client
                                 this.Invoke(new Action(() =>
                                 {
                                     UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
-                                    FriendsFlowPanel.Controls.Add(new Label() {AutoSize=false,Height=60,Dock= DockStyle.Top, Text = string.Format("{1} ({0})\n{2}",FriendID,NickName,Signature)});
+                                    FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
                                 }));
                                 break;
                             }
@@ -358,16 +373,18 @@ namespace Speleon_Client
                                 break;
                             }
                     }
+
                 }
-                catch (ThreadAbortException) {return;}
+                catch (ThreadAbortException) { return; }
                 catch (Exception ex)
                 {
-                    UnityModule.DebugPrint("接收消息时遇到错误：{0}", ex.Message);
+                    UnityModule.DebugPrint("处理消息时遇到错误：{0}", ex.Message);
                     HideMe(HideTo.JusetClose);
                     this.loginForm.Show();
-                    this.loginForm.ShowTips("与服务器连接中断，请检查网络连接。"+Convert.ToString(ex.HResult,16));
+                    this.loginForm.ShowTips("与服务器连接中断，请检查网络连接。" + Convert.ToString(ex.HResult, 16));
                     return;
                 }
+
             }
         }
 
