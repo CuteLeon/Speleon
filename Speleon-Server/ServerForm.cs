@@ -251,14 +251,14 @@ namespace Speleon_Server
                                 if (FriendsListReader == null || !FriendsListReader.HasRows) break;
                                 while (FriendsListReader.Read())
                                 {
-                                    string FriendID = "";
-                                    string NickName = "";
-                                    string Signature = "";
+                                    string FriendID = null;
+                                    string NickName = null;
+                                    string Signature = null;
                                     try
                                     {
-                                        FriendID = FriendsListReader["UserID"] as string;
-                                        NickName = FriendsListReader["NickName"] as string;
-                                        Signature = FriendsListReader["Signature"] as string;
+                                        FriendID = FriendsListReader["UserID"] as string;//??""很重要，否则封装协议消息时会因为string类型变量为引用而出错
+                                        NickName = FriendsListReader["NickName"] as string??"(无昵称)";
+                                        Signature = FriendsListReader["Signature"] as string??"(无签名)";
                                     }
                                     catch (Exception ex)
                                     {

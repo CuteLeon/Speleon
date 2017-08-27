@@ -107,7 +107,7 @@
             this.PasswordTextBox.PasswordChar = '~';
             this.PasswordTextBox.Size = new System.Drawing.Size(145, 20);
             this.PasswordTextBox.TabIndex = 7;
-            this.PasswordTextBox.Text = "234567";
+            this.PasswordTextBox.Text = "123456";
             // 
             // ControlPanel
             // 
