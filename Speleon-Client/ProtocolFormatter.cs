@@ -42,7 +42,11 @@ namespace Speleon_Client
             /// <summary>
             /// 聊天消息
             /// </summary>
-            ChatMessage
+            ChatMessage,
+            /// <summary>
+            /// 注销登录
+            /// </summary>
+            SignOut
         }
 
         /// <summary>
@@ -109,6 +113,11 @@ namespace Speleon_Client
                     case CMDType.GetFriendsList:
                         {
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETFRIENDSLIST_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
+                            break;
+                        }
+                    case CMDType.SignOut:
+                        {
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=SIGNOUT_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
                     default:

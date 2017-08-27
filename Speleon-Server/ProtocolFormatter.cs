@@ -44,7 +44,11 @@ namespace Speleon_Server
             /// <summary>
             /// 聊天消息
             /// </summary>
-            ChatMessage
+            ChatMessage,
+            /// <summary>
+            /// 注销登录
+            /// </summary>
+            SignOut
         }
 
         /// <summary>

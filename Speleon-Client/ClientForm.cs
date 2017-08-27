@@ -257,7 +257,12 @@ namespace Speleon_Client
         {
             try
             {
-                UnitySocket?.Close();
+                if (UnitySocket?.Connected??false)
+                {
+                    //发送注销登录消息
+                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.SignOut,Application.ProductVersion,UnityModule.USERID)));
+                    UnitySocket.Close();
+                }
             }catch{}
             try
             {

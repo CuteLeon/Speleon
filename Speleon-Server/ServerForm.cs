@@ -151,7 +151,7 @@ namespace Speleon_Server
                         SocketsDictionary.Remove(USERID);
                     if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
                         ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
-                    UnityModule.DebugPrint("用户 {0} 下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
+                    UnityModule.DebugPrint("用户 {0} 异常下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
 
                     ClientSocket?.Close();
                     return;
@@ -253,7 +253,12 @@ namespace Speleon_Server
                                 {
                                     OleDbDataReader FriendsListReader = UnityDBControl.ExecuteReader("SELECT UserID,NickName,Signature FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')", USERID);
                                     //查询为空即返回，注意不要return，仅break；
-                                    if (FriendsListReader == null || !FriendsListReader.HasRows) break;
+                                    if (FriendsListReader == null || !FriendsListReader.HasRows)
+                                    {
+                                        FriendsListReader?.Close();
+                                        break;
+                                    }
+
                                     while (FriendsListReader.Read())
                                     {
                                         string FriendID = null;
@@ -271,13 +276,25 @@ namespace Speleon_Server
                                         }
                                         ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetFriendsList, FriendID, NickName, Signature)));
                                     }
+                                    FriendsListReader.Close();
                                     break;
+                                }
+                            case "SIGNOUT":
+                                {
+                                    if (USERID != "" && SocketsDictionary.ContainsKey(USERID))
+                                        SocketsDictionary.Remove(USERID);
+                                    if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
+                                        ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
+                                    UnityModule.DebugPrint("用户 {0} 正常下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
+
+                                    ClientSocket?.Close();
+                                    return;
                                 }
                             default:
                                 {
                                     UnityModule.DebugPrint("遇到未知消息：{0}", ClientMessage);
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        "ServerSystem", "服务端收到你发来未知的CMDTYPE：" + cmdType + "\n" + ClientMessage)));
+                                        "ServerSystem", "服务端收到你发来未知的CMDTYPE：" + cmdType + "    消息原文：" + ClientMessage)));
                                     break;
                                 }
                         }
