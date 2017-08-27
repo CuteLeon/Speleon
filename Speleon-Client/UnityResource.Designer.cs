@@ -93,6 +93,36 @@ namespace Speleon_Client {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap CloseTips_0 {
+            get {
+                object obj = ResourceManager.GetObject("CloseTips_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseTips_1 {
+            get {
+                object obj = ResourceManager.GetObject("CloseTips_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseTips_2 {
+            get {
+                object obj = ResourceManager.GetObject("CloseTips_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap ColorfulButton_0 {
             get {
                 object obj = ResourceManager.GetObject("ColorfulButton_0", resourceCulture);

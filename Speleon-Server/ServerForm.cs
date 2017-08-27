@@ -99,6 +99,7 @@ namespace Speleon_Server
             }
             foreach (Socket clientSocket in SocketsDictionary.Values)
             {
+                clientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.ServerShutdown)));
                 clientSocket.Close();
             }
             ServerSocket?.Close();

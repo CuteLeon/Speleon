@@ -118,19 +118,21 @@ namespace Speleon_Client
             {
                 //开始登录
                 Logining = true;
+                ShowTips("正在登录...");
                 LoginThread = new Thread(Login);
                 LoginThread.Start();
             }
             else
             {
                 //取消登录
-                Logining = false;
                 LoginSocket?.Close();
                 LoginSocket?.Dispose();
                 LoginThread?.Abort();
                 UserIDTextBox.Enabled = true;
                 PasswordTextBox.Enabled = true;
                 SignInButton.Text = "Sign In";
+                ShowTips("已取消登录。");
+                Logining = false;
             }
         }
 
@@ -178,6 +180,7 @@ namespace Speleon_Client
                             //登录成功，切换界面
                             this.Invoke(new Action(() =>
                             {
+                                ShowTips("登录成功！");
                                 SignInButton.Text = "Success.";
                                 this.Invalidate();
                                 UnityModule.USERID = UserIDTextBox.Text;
@@ -191,7 +194,7 @@ namespace Speleon_Client
                             //登录失败
                             this.Invoke(new Action(() =>
                             {
-                                new MyMessageBox("您的密码输入错误，请重试！", MyMessageBox.IconType.Warning).ShowDialog(this);
+                                ShowTips("您的密码输入错误，请重试！");
                                 SignInButton.Text = "Sign In";
                             }));
                             break;
@@ -204,8 +207,6 @@ namespace Speleon_Client
                 UserIDTextBox.Enabled = true;
                 PasswordTextBox.Enabled = true;
                 this.Invalidate();
-
-                Logining = false;
             }
             catch (ThreadAbortException)
             {
@@ -219,22 +220,15 @@ namespace Speleon_Client
                 UnityModule.DebugPrint("登录遇到错误！{0}", ex.Message);
                 this.Invoke(new Action(() =>
                 {
-                    if (new MyMessageBox("登录遇到错误，是否重试？\n" + ex.Message, MyMessageBox.IconType.Question).ShowDialog(this) == DialogResult.OK)
-                    {
-                        this.Invoke(new Action(() =>
-                        {
-                            SignInButton_Click(null, null);
-                        }));
-                    }
-                    else
-                    {
-                        UserIDTextBox.Enabled = true;
-                        PasswordTextBox.Enabled = true;
-                        SignInButton.Text = "Sign In";
-                        this.Invalidate();
-                    }
+                    UserIDTextBox.Enabled = true;
+                    PasswordTextBox.Enabled = true;
+                    SignInButton.Text = "Sign In";
+                    this.Invalidate();
+                    ShowTips("登录遇到错误，请检查网络连接。"+Convert.ToString(ex.HResult,16));
                 }));
             }
+
+            Logining = false;
         }
 
         #endregion
@@ -272,6 +266,7 @@ namespace Speleon_Client
             MinButton.Parent = ActiveBGIBOX;
             CloseButton.Parent = ActiveBGIBOX;
             LoginAreaLabel.Parent = ActiveBGIBOX;
+            TipsPanel.Parent = ActiveBGIBOX;
 
             //绑定鼠标拖动事件
             this.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
@@ -279,6 +274,7 @@ namespace Speleon_Client
             TitleLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
             LoginAreaLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
 
+            UserIDTextBox.SelectionStart = UserIDTextBox.Text.Length;
             UserIDTextBox.SelectionLength = 0;
             UnityModule.DebugPrint("窗体加载成功");
         }
@@ -296,17 +292,69 @@ namespace Speleon_Client
             }
         }
 
-        private void LoginForm_Paint(object sender, PaintEventArgs e)
+        #endregion
+
+        #region Paint
+
+        private void TipsPanel_Paint(object sender, PaintEventArgs e)
         {
-            using (Brush linearGradientBrush = new LinearGradientBrush(this.ClientRectangle, Color.WhiteSmoke, Color.White, LinearGradientMode.ForwardDiagonal))
+            using (Brush linearGradientBrush = new LinearGradientBrush(TipsPanel.ClientRectangle, Color.Transparent, Color.FromArgb(255, 255, 255, 255), LinearGradientMode.Vertical))
             {
-                //绘制渐变
-                e.Graphics.FillRectangle(linearGradientBrush, this.ClientRectangle);
+                e.Graphics.FillRectangle(linearGradientBrush, TipsPanel.ClientRectangle);
+            }
+        }
+
+        private void ControlPanel_Paint(object sender, PaintEventArgs e)
+        {
+            using (Brush linearGradientBrush = new LinearGradientBrush(ControlPanel.ClientRectangle, Color.White, Color.Gainsboro, LinearGradientMode.BackwardDiagonal))
+            {
+                e.Graphics.FillRectangle(linearGradientBrush, ControlPanel.ClientRectangle);
             }
         }
 
         #endregion
 
+        #region 显示提示消息
+
+        public void ShowTips(string TipsMessage)
+        {
+            TipsLabel.Text = TipsMessage;
+            if (TipsPanel.Visible)
+            {
+                if (TipsPanel.Top == ActiveBGIBOX.Height - TipsPanel.Height)
+                {
+                    TipsPanel.Top = ActiveBGIBOX.Height;
+                }
+            }
+            else
+            {
+                TipsPanel.Show();
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
+                while (TipsPanel.Top > ActiveBGIBOX.Height - TipsPanel.Height)
+                {
+                    TipsPanel.Top -= 1;
+                    Thread.Sleep(5);
+                }
+                TipsClsoeButton.Click += new EventHandler(TipsClsoeButton_Click);
+            }));
+        }
+
+        private void TipsClsoeButton_Click(object sender, EventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
+                while (TipsPanel.Top < ActiveBGIBOX.Height)
+                {
+                    TipsPanel.Top += 1;
+                    Thread.Sleep(5);
+                }
+                TipsPanel.Hide();
+                TipsClsoeButton.Click -= new EventHandler(TipsClsoeButton_Click);
+            }));
+        }
+
+        #endregion
 
     }
 }

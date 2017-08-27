@@ -34,6 +34,10 @@ namespace Speleon_Server
             /// </summary>
             WhoAmI,
             /// <summary>
+            /// 服务端关闭
+            /// </summary>
+            ServerShutdown,
+            /// <summary>
             /// 聊天消息
             /// </summary>
             ChatMessage
@@ -127,12 +131,18 @@ namespace Speleon_Server
                             ProtocolString = string.Format("HI_CMDTYPE=ANOTHORSIGNIN_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
+                    case CMDType.ServerShutdown:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=SERVERSHUTDOWN_\n");
+                            break;
+                        }
                     default:
                         {
                             ProtocolString = "";
                             break;
                         }
                 }
+
                 UnityModule.DebugPrint("协议内容：{0}", ProtocolString);
                 return ProtocolString;
             }

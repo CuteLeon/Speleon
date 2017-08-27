@@ -32,6 +32,10 @@ namespace Speleon_Client
             /// </summary>
             WhoAmI,
             /// <summary>
+            /// 服务端关闭
+            /// </summary>
+            ServerShutdown,
+            /// <summary>
             /// 聊天消息
             /// </summary>
             ChatMessage

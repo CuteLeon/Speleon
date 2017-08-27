@@ -290,10 +290,11 @@ namespace Speleon_Client
                             {
                                 this.Invoke(new Action(() =>
                                 {
-                                    //todo:显示账号异地登录告警提示
                                     HideMe(HideTo.JusetClose);
                                     this.loginForm.Show();
-                                    loginForm.Text = "您的账号异地登录，请注意账号安全！";
+                                    this.loginForm.ShowTips("您的账号异地登陆，请注意密码安全！");
+                                    UnitySocket.Close();
+                                    ReceiveThread.Abort();
                                 }));
                                 
                                 //这里需要 return; 否则会进入 catch(){} 被当做异常处理
@@ -315,6 +316,17 @@ namespace Speleon_Client
                                 }));
                                 break;
                             }
+                        case "SERVERSHUTDOWN":
+                            {
+                                this.Invoke(new Action(()=> {
+                                    HideMe(HideTo.JusetClose);
+                                    this.loginForm.Show();
+                                    this.loginForm.ShowTips("远程服务器主动关闭，可能Leon关机去上课了...");
+                                    UnitySocket.Close();
+                                    ReceiveThread.Abort();
+                                }));
+                                return;
+                            }
                         default:
                             {
                                 this.Invoke(new Action(() =>
@@ -328,12 +340,10 @@ namespace Speleon_Client
                 catch (ThreadAbortException) {return;}
                 catch (Exception ex)
                 {
-                    //todo:客户端，连接断开，需要重新连接/登录
                     UnityModule.DebugPrint("接收消息时遇到错误：{0}", ex.Message);
                     HideMe(HideTo.JusetClose);
                     this.loginForm.Show();
-                    this.loginForm.Text="Exception";
-                    //"您的账号在其他地方登录，请注意密码安全！"
+                    this.loginForm.ShowTips("与服务器连接中断，请检查网络连接。"+Convert.ToString(ex.HResult,16));
                     return;
                 }
             }

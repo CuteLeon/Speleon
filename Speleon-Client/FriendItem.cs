@@ -12,6 +12,9 @@ namespace Speleon_Client
 {
     public partial class FriendItem : UserControl
     {
+        /// <summary>
+        /// 好友条目
+        /// </summary>
         public FriendItem()
         {
             InitializeComponent();

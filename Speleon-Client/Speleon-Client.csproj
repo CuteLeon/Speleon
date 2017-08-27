@@ -215,5 +215,14 @@
   <ItemGroup>
     <None Include="Resources\DefaultButton_2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseTips_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseTips_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseTips_2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

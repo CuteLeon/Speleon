@@ -34,11 +34,17 @@
             this.LoginAreaLabel = new System.Windows.Forms.Label();
             this.UserIDTextBox = new System.Windows.Forms.TextBox();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ControlPanel = new Speleon_Client.MyPanel();
+            this.SignInButton = new Speleon_Client.LabelButton();
             this.MinButton = new Speleon_Client.LabelButton();
             this.CloseButton = new Speleon_Client.LabelButton();
-            this.SignInButton = new Speleon_Client.LabelButton();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.TipsPanel = new Speleon_Client.MyPanel();
+            this.TipsLabel = new System.Windows.Forms.Label();
+            this.TipsClsoeButton = new Speleon_Client.LabelButton();
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).BeginInit();
+            this.ControlPanel.SuspendLayout();
+            this.TipsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ActiveBGIBOX
@@ -105,6 +111,31 @@
             this.PasswordTextBox.TabIndex = 7;
             this.PasswordTextBox.Text = "234567";
             // 
+            // ControlPanel
+            // 
+            this.ControlPanel.Controls.Add(this.SignInButton);
+            this.ControlPanel.Location = new System.Drawing.Point(0, 260);
+            this.ControlPanel.Name = "ControlPanel";
+            this.ControlPanel.Size = new System.Drawing.Size(500, 68);
+            this.ControlPanel.TabIndex = 9;
+            this.ControlPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.ControlPanel_Paint);
+            // 
+            // SignInButton
+            // 
+            this.SignInButton.BackColor = System.Drawing.Color.Transparent;
+            this.SignInButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.SignInButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.SignInButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
+            this.SignInButton.Location = new System.Drawing.Point(156, -4);
+            this.SignInButton.Margin = new System.Windows.Forms.Padding(0);
+            this.SignInButton.Name = "SignInButton";
+            this.SignInButton.Size = new System.Drawing.Size(188, 72);
+            this.SignInButton.TabIndex = 4;
+            this.SignInButton.Tag = "ColorfulButton";
+            this.SignInButton.Text = "Sign In";
+            this.SignInButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SignInButton.Click += new System.EventHandler(this.SignInButton_Click);
+            // 
             // MinButton
             // 
             this.MinButton.BackColor = System.Drawing.Color.Transparent;
@@ -127,21 +158,38 @@
             this.CloseButton.Tag = "Close";
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
             // 
-            // SignInButton
+            // TipsPanel
             // 
-            this.SignInButton.BackColor = System.Drawing.Color.Transparent;
-            this.SignInButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.SignInButton.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.SignInButton.Image = global::Speleon_Client.UnityResource.ColorfulButton_0;
-            this.SignInButton.Location = new System.Drawing.Point(156, 256);
-            this.SignInButton.Margin = new System.Windows.Forms.Padding(0);
-            this.SignInButton.Name = "SignInButton";
-            this.SignInButton.Size = new System.Drawing.Size(188, 72);
-            this.SignInButton.TabIndex = 4;
-            this.SignInButton.Tag = "ColorfulButton";
-            this.SignInButton.Text = "Sign In";
-            this.SignInButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.SignInButton.Click += new System.EventHandler(this.SignInButton_Click);
+            this.TipsPanel.BackColor = System.Drawing.Color.Transparent;
+            this.TipsPanel.Controls.Add(this.TipsLabel);
+            this.TipsPanel.Controls.Add(this.TipsClsoeButton);
+            this.TipsPanel.Location = new System.Drawing.Point(0, 260);
+            this.TipsPanel.Name = "TipsPanel";
+            this.TipsPanel.Padding = new System.Windows.Forms.Padding(30, 0, 6, 0);
+            this.TipsPanel.Size = new System.Drawing.Size(500, 36);
+            this.TipsPanel.TabIndex = 9;
+            this.TipsPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TipsPanel_Paint);
+            // 
+            // TipsLabel
+            // 
+            this.TipsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TipsLabel.Font = new System.Drawing.Font("微软雅黑", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TipsLabel.ForeColor = System.Drawing.Color.Aqua;
+            this.TipsLabel.Location = new System.Drawing.Point(30, 0);
+            this.TipsLabel.Name = "TipsLabel";
+            this.TipsLabel.Size = new System.Drawing.Size(440, 36);
+            this.TipsLabel.TabIndex = 1;
+            this.TipsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // TipsClsoeButton
+            // 
+            this.TipsClsoeButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.TipsClsoeButton.Image = global::Speleon_Client.UnityResource.CloseTips_0;
+            this.TipsClsoeButton.Location = new System.Drawing.Point(470, 0);
+            this.TipsClsoeButton.Name = "TipsClsoeButton";
+            this.TipsClsoeButton.Size = new System.Drawing.Size(24, 36);
+            this.TipsClsoeButton.TabIndex = 0;
+            this.TipsClsoeButton.Tag = "CloseTips";
             // 
             // LoginForm
             // 
@@ -156,16 +204,19 @@
             this.Controls.Add(this.MinButton);
             this.Controls.Add(this.CloseButton);
             this.Controls.Add(this.ActiveBGIBOX);
-            this.Controls.Add(this.SignInButton);
+            this.Controls.Add(this.TipsPanel);
+            this.Controls.Add(this.ControlPanel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Speleon-Login";
+            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
             this.Load += new System.EventHandler(this.LoginForm_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.LoginForm_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.ActiveBGIBOX)).EndInit();
+            this.ControlPanel.ResumeLayout(false);
+            this.TipsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,6 +233,10 @@
         private System.Windows.Forms.TextBox UserIDTextBox;
         private System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.ToolTip toolTip1;
+        private MyPanel TipsPanel;
+        private MyPanel ControlPanel;
+        private LabelButton TipsClsoeButton;
+        private System.Windows.Forms.Label TipsLabel;
     }
 }
 
