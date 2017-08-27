@@ -50,6 +50,11 @@ namespace Speleon_Client
             Close
         }
 
+        /// <summary>
+        /// 关闭Tips事件句柄，使用唯一变量，防止动态显示和动态隐藏线程冲突
+        /// </summary>
+        private EventHandler CloseTipsEventHandler;
+
         #endregion
 
         #region 标题栏按钮
@@ -150,11 +155,30 @@ namespace Speleon_Client
             }
         }
 
+        /// <summary>
+        /// 限制用户账号输入框的输入内容
+        /// </summary>
         private void UserIDTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //限定用户账户输入框尽可接收数字和退格
-            if (!char.IsNumber(e.KeyChar) && e.KeyChar!= (char)Keys.Back)
+            if (!char.IsNumber(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                //屏蔽非数字键和非退格键
                 e.Handled = true;
+                if (e.KeyChar == (char)Keys.Enter)
+                {
+                    //回车键触发登录
+                    SignInButton_Click(null,null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 在密码输入框使用回车键触发登录
+        /// </summary>
+        private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                SignInButton_Click(null, null);
         }
 
         /// <summary>
@@ -289,8 +313,15 @@ namespace Speleon_Client
             TitleLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
             LoginAreaLabel.MouseDown += new MouseEventHandler(UnityModule.MoveFormViaMouse);
 
+            //防止输入框选中
             UserIDTextBox.SelectionStart = UserIDTextBox.Text.Length;
             UserIDTextBox.SelectionLength = 0;
+            PasswordTextBox.SelectionStart = PasswordTextBox.Text.Length;
+            PasswordTextBox.SelectionLength = 0;
+            
+            //记录关闭Tips事件句柄
+            CloseTipsEventHandler = new EventHandler(TipsClsoeButton_Click);
+
             UnityModule.DebugPrint("窗体加载成功");
         }
 
@@ -331,6 +362,10 @@ namespace Speleon_Client
 
         #region 显示提示消息
 
+        /// <summary>
+        /// 动态显示Tips
+        /// </summary>
+        /// <param name="TipsMessage"></param>
         public void ShowTips(string TipsMessage)
         {
             TipsLabel.Text = TipsMessage;
@@ -352,10 +387,13 @@ namespace Speleon_Client
                     TipsPanel.Top -= 1;
                     Thread.Sleep(5);
                 }
-                TipsClsoeButton.Click += new EventHandler(TipsClsoeButton_Click);
+                TipsClsoeButton.Click += CloseTipsEventHandler;
             }));
         }
 
+        /// <summary>
+        /// 点击关闭Tips
+        /// </summary>
         private void TipsClsoeButton_Click(object sender, EventArgs e)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate {
@@ -365,7 +403,7 @@ namespace Speleon_Client
                     Thread.Sleep(5);
                 }
                 TipsPanel.Hide();
-                TipsClsoeButton.Click -= new EventHandler(TipsClsoeButton_Click);
+                TipsClsoeButton.Click -= CloseTipsEventHandler;
             }));
         }
 

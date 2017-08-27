@@ -108,6 +108,7 @@
             this.PasswordTextBox.Size = new System.Drawing.Size(145, 20);
             this.PasswordTextBox.TabIndex = 7;
             this.PasswordTextBox.Text = "123456";
+            this.PasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PasswordTextBox_KeyDown);
             // 
             // ControlPanel
             // 
