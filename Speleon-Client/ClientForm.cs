@@ -275,15 +275,15 @@ namespace Speleon_Client
         {
             while (true)
             {
-                byte[] MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
-                int MessageBufferSize = UnitySocket.Receive(MessageBuffer);
-                string ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+                byte[] MessageBuffer = new byte[]{};
+                int MessageBufferSize = 0;
+                string ServerMessagePackage = "";
 
                 try
                 {
                     MessageBuffer = new byte[UnitySocket.ReceiveBufferSize - 1];
                     MessageBufferSize = UnitySocket.Receive(MessageBuffer);
-                    ServerMessage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
+                    ServerMessagePackage = Encoding.UTF8.GetString(MessageBuffer, 0, MessageBufferSize);
                 }
                 catch (ThreadAbortException) { return; }
                 catch (Exception ex)
@@ -295,94 +295,104 @@ namespace Speleon_Client
                     return;
                 }
 
-                try
-                {
-                    UnityModule.DebugPrint("收到服务器的消息：{0}", ServerMessage);
-                    MessageBox.Show(ServerMessage);
-                    string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
-                    Regex MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                    Match MessageMatchResult = MessageRegex.Match(ServerMessage);
-                    string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
-                    UnityModule.DebugPrint("收到 CMDTYPE : {0}", cmdType);
+                UnityModule.DebugPrint("ServerMessagePackage : {0}", ServerMessagePackage);
 
-                    switch (cmdType)
+                /*
+                 * 遇到严重的TCP粘包问题，服务端分多次发送的GETFRIENDSLIST协议，被一次发送给了客户端
+                 * 导致客户端只能提取到第一条协议，因为每条协议以'\n'结尾，所以每次收到数据包后对其按'\n'分割
+                 * 分割后判断不为空的段后加'\n'再按正常的协议包处理，为空不处理
+                 * 以上，解决粘包问题
+                 */
+                string[] ServerMessages = ServerMessagePackage.Split('\n');
+                foreach(string TempServerMessage in ServerMessages)
+                {
+                    try
                     {
-                        case "CHATMESSAGE":
-                            {
-                                string FromID=null,Message = null;
-                                MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
-                                MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                                MessageMatchResult = MessageRegex.Match(ServerMessage);
-                                FromID = MessageMatchResult.Groups["FROMID"].Value.ToString();
-                                Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value.ToString()));
+                        if (string.IsNullOrEmpty(TempServerMessage)) break;
 
-                                this.Invoke(new Action(() =>
-                                {
-                                    new MyMessageBox(Message, "来自 [" + FromID + "] 的消息：",MyMessageBox.IconType.Info).Show(this);
-                                }));
-                                break;
-                            }
-                        case "GETFRIENDSLIST":
-                            {
-                                string FriendID = null, NickName = null,Signature=null;
-                                MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
-                                MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                                MessageMatchResult = MessageRegex.Match(ServerMessage);
-                                FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
-                                NickName = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["NICKNAME"].Value.ToString()));
-                                Signature = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["SIGNATURE"].Value.ToString()));
+                        string ServerMessage = TempServerMessage + '\n';
+                        UnityModule.DebugPrint("ServerMessage : {0}", ServerMessage);
+                        string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
+                        Regex MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                        Match MessageMatchResult = MessageRegex.Match(ServerMessage);
+                        string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
+                        UnityModule.DebugPrint("收到 CMDTYPE : {0}", cmdType);
 
-                                this.Invoke(new Action(() =>
+                        switch (cmdType)
+                        {
+                            case "CHATMESSAGE":
                                 {
-                                    UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
-                                    FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
-                                }));
-                                break;
-                            }
-                        case "ANOTHORSIGNIN":
-                            {
-                                this.Invoke(new Action(() =>
-                                {
-                                    HideMe(HideTo.JusetClose);
-                                    this.loginForm.Show();
-                                    this.loginForm.ShowTips("您的账号异地登陆，请注意密码安全！");
-                                    UnitySocket.Close();
-                                    ReceiveThread.Abort();
-                                }));
+                                    string FromID=null,Message = null;
+                                    MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
+                                    MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                    MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                    FromID = MessageMatchResult.Groups["FROMID"].Value.ToString();
+                                    Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value.ToString()));
 
-                                //这里需要 return; 否则会进入 catch(){} 被当做异常处理
-                                return;
-                            }
-                        case "SERVERSHUTDOWN":
-                            {
-                                this.Invoke(new Action(()=> {
-                                    HideMe(HideTo.JusetClose);
-                                    this.loginForm.Show();
-                                    this.loginForm.ShowTips("远程服务器主动关闭，可能Leon关机去上课了...");
-                                    UnitySocket.Close();
-                                    ReceiveThread.Abort();
-                                }));
-                                return;
-                            }
-                        default:
-                            {
-                                this.Invoke(new Action(() =>
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        new MyMessageBox(Message, "来自 [" + FromID + "] 的消息：",MyMessageBox.IconType.Info).Show(this);
+                                    }));
+                                    break;
+                                }
+                            case "GETFRIENDSLIST":
                                 {
-                                    new MyMessageBox("遇到未知的 CMDTYPE : " + cmdType, MyMessageBox.IconType.Info).Show(this);
-                                }));
-                                break;
-                            }
+                                    string FriendID = null, NickName = null,Signature=null;
+                                    MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
+                                    MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                    MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                    FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
+                                    NickName = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["NICKNAME"].Value.ToString()));
+                                    Signature = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["SIGNATURE"].Value.ToString()));
+
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
+                                        FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
+                                    }));
+                                    break;
+                                }
+                            case "ANOTHORSIGNIN":
+                                {
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        HideMe(HideTo.JusetClose);
+                                        this.loginForm.Show();
+                                        this.loginForm.ShowTips("您的账号异地登陆，请注意密码安全！");
+                                        UnitySocket.Close();
+                                        ReceiveThread.Abort();
+                                    }));
+
+                                    //这里需要 return; 否则会进入 catch(){} 被当做异常处理
+                                    return;
+                                }
+                            case "SERVERSHUTDOWN":
+                                {
+                                    this.Invoke(new Action(()=> {
+                                        HideMe(HideTo.JusetClose);
+                                        this.loginForm.Show();
+                                        this.loginForm.ShowTips("远程服务器主动关闭，可能Leon关机去上课了...");
+                                        UnitySocket.Close();
+                                        ReceiveThread.Abort();
+                                    }));
+                                    return;
+                                }
+                            default:
+                                {
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        new MyMessageBox("遇到未知的 CMDTYPE : " + cmdType, MyMessageBox.IconType.Info).Show(this);
+                                    }));
+                                    break;
+                                }
+                        }
+
                     }
-
-                }
-                catch (ThreadAbortException) { return; }
-                catch (Exception ex)
-                {
-                    UnityModule.DebugPrint("处理消息时遇到错误：{0}", ex.Message);
-                    HideMe(HideTo.JusetClose);
-                    this.loginForm.Show();
-                    this.loginForm.ShowTips("与服务器连接中断，请检查网络连接。" + Convert.ToString(ex.HResult, 16));
-                    return;
+                    catch (ThreadAbortException) { return; }
+                    catch (Exception ex)
+                    {
+                        UnityModule.DebugPrint("处理消息时遇到错误：{0}", ex.Message);
+                    }
                 }
 
             }
