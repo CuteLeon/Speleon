@@ -20,6 +20,10 @@ namespace Speleon_Client
             /// </summary>
             SignIn,
             /// <summary>
+            /// 获取好友列表
+            /// </summary>
+            GetFriendsList,
+            /// <summary>
             /// 登录成功
             /// </summary>
             SignInSuccessfully,
@@ -58,6 +62,11 @@ namespace Speleon_Client
                         ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                         break;
                     }
+                case CMDType.GetFriendsList:
+                    {
+                        ProtocolString = "HI_CMDTYPE=GETFRIENDSLIST_FRIENDID=(?<FRIENDID>.+?)_NICKNAME=(?<NICKNAME>.+?)_SIGNATURE=(?<SIGNATURE>.+?)\n";
+                        break;
+                    }
                 default:
                     {
                         ProtocolString = "";
@@ -94,7 +103,12 @@ namespace Speleon_Client
                         }
                     case CMDType.WhoAmI:
                         {
-                            ProtocolString = String.Format("HEY_CVER={0}_CMDTYPE=WHOAMI_USERID={1}\n", ProtocolValues[0], ProtocolValues[1]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=WHOAMI_USERID={1}\n", ProtocolValues[0], ProtocolValues[1]);
+                            break;
+                        }
+                    case CMDType.GetFriendsList:
+                        {
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETFRIENDSLIST_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
                     default:

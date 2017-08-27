@@ -11,6 +11,7 @@ namespace Speleon_Server
 {
     static class UnityModule
     {
+        static public string ServerNickName = "I'M UR FATHER";
         static public int ServerPort = 17417;
 
         //用于鼠标拖动无边框窗体

@@ -112,6 +112,7 @@
             // ControlPanel
             // 
             this.ControlPanel.Controls.Add(this.SignInButton);
+            this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ControlPanel.Location = new System.Drawing.Point(0, 260);
             this.ControlPanel.Name = "ControlPanel";
             this.ControlPanel.Size = new System.Drawing.Size(500, 68);
@@ -195,6 +196,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(500, 328);
+            this.Controls.Add(this.ControlPanel);
             this.Controls.Add(this.PasswordTextBox);
             this.Controls.Add(this.UserIDTextBox);
             this.Controls.Add(this.LoginAreaLabel);
@@ -203,7 +205,6 @@
             this.Controls.Add(this.CloseButton);
             this.Controls.Add(this.ActiveBGIBOX);
             this.Controls.Add(this.TipsPanel);
-            this.Controls.Add(this.ControlPanel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "LoginForm";

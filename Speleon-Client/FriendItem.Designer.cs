@@ -32,10 +32,11 @@
             // 
             // FriendItem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.Name = "FriendItem";
-            this.Size = new System.Drawing.Size(225, 76);
+            this.Padding = new System.Windows.Forms.Padding(5);
+            this.Size = new System.Drawing.Size(230, 72);
             this.ResumeLayout(false);
 
         }

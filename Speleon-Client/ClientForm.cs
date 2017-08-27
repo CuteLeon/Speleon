@@ -123,11 +123,16 @@ namespace Speleon_Client
                     //发送WHOAMI数据，告诉服务端自己的USERID
                     UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.WhoAmI,Application.ProductVersion,UnityModule.USERID)));
                     UnityModule.DebugPrint("WHOAMI 数据包发送成功！");
+                    
+                    //发送获取好友列表请求
+                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetFriendsList,Application.ProductVersion,UnityModule.USERID)));
+                    UnityModule.DebugPrint("GETFRIENDSLIST 数据包发送成功！");
                 }
                 catch (Exception ex)
                 {
                     this.Invoke(new Action(()=> {
                         new MyMessageBox("连接服务器遇到错误：{0}", ex.Message).ShowDialog(this);
+
                     }));
                 }
             }));
@@ -286,20 +291,6 @@ namespace Speleon_Client
 
                     switch (cmdType)
                     {
-                        case "ANOTHORSIGNIN":
-                            {
-                                this.Invoke(new Action(() =>
-                                {
-                                    HideMe(HideTo.JusetClose);
-                                    this.loginForm.Show();
-                                    this.loginForm.ShowTips("您的账号异地登陆，请注意密码安全！");
-                                    UnitySocket.Close();
-                                    ReceiveThread.Abort();
-                                }));
-                                
-                                //这里需要 return; 否则会进入 catch(){} 被当做异常处理
-                                return;
-                            }
                         case "CHATMESSAGE":
                             {
                                 //todo:正则匹配聊天消息
@@ -312,9 +303,40 @@ namespace Speleon_Client
 
                                 this.Invoke(new Action(() =>
                                 {
-                                    new MyMessageBox(Message, "来自：" + FromID,MyMessageBox.IconType.Info).Show(this);
+                                    new MyMessageBox(Message, "来自 [" + FromID + "] 的消息：",MyMessageBox.IconType.Info).Show(this);
                                 }));
                                 break;
+                            }
+                        case "GETFRIENDSLIST":
+                            {
+                                string FriendID = null, NickName = null,Signature=null;
+                                MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
+                                MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
+                                NickName = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["NICKNAME"].Value.ToString()));
+                                Signature = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["SIGNATURE"].Value.ToString()));
+
+                                this.Invoke(new Action(() =>
+                                {
+                                    UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
+                                    FriendsFlowPanel.Controls.Add(new Label() {AutoSize=false,Height=60,Dock= DockStyle.Top, Text = string.Format("{1} ({0})\n{2}",FriendID,NickName,Signature)});
+                                }));
+                                break;
+                            }
+                        case "ANOTHORSIGNIN":
+                            {
+                                this.Invoke(new Action(() =>
+                                {
+                                    HideMe(HideTo.JusetClose);
+                                    this.loginForm.Show();
+                                    this.loginForm.ShowTips("您的账号异地登陆，请注意密码安全！");
+                                    UnitySocket.Close();
+                                    ReceiveThread.Abort();
+                                }));
+
+                                //这里需要 return; 否则会进入 catch(){} 被当做异常处理
+                                return;
                             }
                         case "SERVERSHUTDOWN":
                             {

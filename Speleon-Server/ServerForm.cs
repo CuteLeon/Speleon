@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -21,7 +22,7 @@ namespace Speleon_Server
         /// <summary>
         /// 最多允许连接的客户端数量
         /// </summary>
-        private const byte MAX_CLIENT_COUNT= 10;
+        private const byte MAX_CLIENT_COUNT = 10;
         /// <summary>
         /// 用户账号为KEY，Socket为Value的字典
         /// </summary>
@@ -42,7 +43,7 @@ namespace Speleon_Server
         /// 数据库控制器
         /// </summary>
         DataBaseController UnityDBControl = new DataBaseController();
-        
+
         #endregion
 
         public ServerForm()
@@ -99,7 +100,7 @@ namespace Speleon_Server
             }
             foreach (Socket clientSocket in SocketsDictionary.Values)
             {
-                clientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.ServerShutdown)));
+                clientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ServerShutdown)));
                 clientSocket.Close();
             }
             ServerSocket?.Close();
@@ -117,15 +118,15 @@ namespace Speleon_Server
                 try
                 {
                     Socket ClientSocket = ServerSocket.Accept();
-                    Thread ReceiveMessageThread = new Thread(new ThreadStart( delegate { ReceiveClientMessage(ClientSocket); }));
+                    Thread ReceiveMessageThread = new Thread(new ThreadStart(delegate { ReceiveClientMessage(ClientSocket); }));
                     ReceiveMessageThread.Start();
-                    ReceiveThreadDictionary.Add(ClientSocket.RemoteEndPoint.ToString(),ReceiveMessageThread);
+                    ReceiveThreadDictionary.Add(ClientSocket.RemoteEndPoint.ToString(), ReceiveMessageThread);
 
                     UnityModule.DebugPrint("同意 {0} 的请求，已开始接收消息...", ClientSocket.RemoteEndPoint.ToString());
                 }
                 catch (Exception ex)
                 {
-                    UnityModule.DebugPrint("创建Socket连接失败：{0}",ex.Message);
+                    UnityModule.DebugPrint("创建Socket连接失败：{0}", ex.Message);
                 }
             }
         }
@@ -147,9 +148,9 @@ namespace Speleon_Server
                 {
                     UnityModule.DebugPrint("接收客户端消息时遇到错误：{0}", ex.Message);
                     //todo:断开与客户端的连接，需要将用户置为离线
-                    if(USERID!="" && SocketsDictionary.ContainsKey(USERID))
+                    if (USERID != "" && SocketsDictionary.ContainsKey(USERID))
                         SocketsDictionary.Remove(USERID);
-                    if(ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
+                    if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
                         ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
                     UnityModule.DebugPrint("用户 {0} 下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
 
@@ -172,8 +173,8 @@ namespace Speleon_Server
                                 MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                 MessageMatchResult = MessageRegex.Match(ClientMessage);
                                 string ToID = MessageMatchResult.Groups["TOID"].Value;
-                                string Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value as string));
-                                UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}",USERID,ToID,Message);
+                                string Message = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value as string));
+                                UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}", USERID, ToID, Message);
                                 //todo:转发消息
 
                                 //判断对方是否连接
@@ -198,7 +199,7 @@ namespace Speleon_Server
                                 string UserID = MessageMatchResult.Groups["USERID"].Value;
                                 string Password = MessageMatchResult.Groups["PASSWORD"].Value;
 
-                                object CheckUserID = UnityDBControl.ExecuteScalar("select USERID from userbase where USERID='{0}' and password='{1}';", UserID, Password);
+                                object CheckUserID = UnityDBControl.ExecuteScalar("SELECT UserID FROM UserBase WHERE UserID='{0}' AND Password='{1}';", UserID, Password);
                                 if (CheckUserID != null)
                                 {
                                     //用户登陆成功！
@@ -225,9 +226,8 @@ namespace Speleon_Server
                                 if (SocketsDictionary.ContainsKey(USERID))
                                 {
                                     UnityModule.DebugPrint("用户 {0} 已经在 {1} 登录，即将被顶下线...", USERID, SocketsDictionary[USERID].RemoteEndPoint.ToString());
-                                    //todo:用户异地登录，被顶下线，发送下线命令，释放Socket和Thread，并赋值新的Socket和Thread
                                     Socket TempSocket = SocketsDictionary[USERID];
-                                    TempSocket.Send(Encoding.UTF8.GetBytes( ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.AnothorSignIn,USERID)));
+                                    TempSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.AnothorSignIn, USERID)));
                                     Thread TempThread = ReceiveThreadDictionary[TempSocket.RemoteEndPoint.ToString()];
                                     ReceiveThreadDictionary.Remove(TempSocket.RemoteEndPoint.ToString());
                                     TempThread.Abort();
@@ -239,9 +239,33 @@ namespace Speleon_Server
                                 //以USERID为KEY，记录Socket
                                 SocketsDictionary.Add(USERID, ClientSocket);
                                 ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                    "ServerSystem", "你好,\n欢迎登录 Speleon !")));
+                                    UnityModule.ServerNickName, "你好,\n欢迎登录 Speleon !")));
 
-                                UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID,ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
+                                UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID, ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
+                                break;
+                            }
+                        case "GETFRIENDSLIST":
+                            {
+                                OleDbDataReader FriendsListReader = UnityDBControl.ExecuteReader("SELECT UserID,NickName,Signature FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')",USERID);
+                                //查询为空即返回，注意不要return，仅break；
+                                if (FriendsListReader == null || !FriendsListReader.HasRows) break;
+                                while (FriendsListReader.Read())
+                                {
+                                    string FriendID = "";
+                                    string NickName = "";
+                                    string Signature = "";
+                                    try
+                                    {
+                                        FriendID = FriendsListReader["UserID"] as string;
+                                        NickName = FriendsListReader["NickName"] as string;
+                                        Signature = FriendsListReader["Signature"] as string;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        UnityModule.DebugPrint("读取用户{0}的好友{1}信息时遇到错误：{2}",USERID,FriendID,ex.Message);
+                                    }
+                                    ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetFriendsList,FriendID,NickName,Signature)));
+                                }
                                 break;
                             }
                         default:

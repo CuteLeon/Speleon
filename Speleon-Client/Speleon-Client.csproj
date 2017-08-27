@@ -78,6 +78,9 @@
     <Compile Include="MyMessageBox.Designer.cs">
       <DependentUpon>MyMessageBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="FlowLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MyPanel.cs">
       <SubType>Component</SubType>
     </Compile>

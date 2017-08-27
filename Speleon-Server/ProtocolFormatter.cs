@@ -34,6 +34,10 @@ namespace Speleon_Server
             /// </summary>
             WhoAmI,
             /// <summary>
+            /// 获取好友列表
+            /// </summary>
+            GetFriendsList,
+            /// <summary>
             /// 服务端关闭
             /// </summary>
             ServerShutdown,
@@ -116,14 +120,19 @@ namespace Speleon_Server
                             ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0],Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])));
                             break;
                         }
+                    case CMDType.GetFriendsList:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=GETFRIENDSLIST_FRIENDID={0}_NICKNAME={1}_SIGNATURE={2}\n",ProtocolValues[0], Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])), Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[2])));
+                            break;
+                        }
                     case CMDType.SignInSuccessfully:
                         {
-                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0]);
+                            ProtocolString = string.Format("HI_CMDTYPE=SIGNINSUCCESSFULLY_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
                     case CMDType.SignInUnsuccessfully:
                         {
-                            ProtocolString = String.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0]);
+                            ProtocolString = string.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0]);
                             break;
                         }
                     case CMDType.AnothorSignIn:
