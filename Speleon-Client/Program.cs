@@ -16,6 +16,8 @@ namespace Speleon_Client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            //'参数无效' 可能是 _Paint() 事件导致的
             Application.Run(new LoginForm());
         }
     }

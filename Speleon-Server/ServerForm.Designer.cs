@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.LogListBox = new System.Windows.Forms.ListBox();
+            this.TestButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // LogListBox
@@ -45,11 +46,25 @@
             this.LogListBox.TabIndex = 0;
             this.LogListBox.DoubleClick += new System.EventHandler(this.LogListBox_DoubleClick);
             // 
+            // TestButton
+            // 
+            this.TestButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.TestButton.Location = new System.Drawing.Point(560, 0);
+            this.TestButton.MaximumSize = new System.Drawing.Size(100, 25);
+            this.TestButton.MinimumSize = new System.Drawing.Size(100, 25);
+            this.TestButton.Name = "TestButton";
+            this.TestButton.Size = new System.Drawing.Size(100, 25);
+            this.TestButton.TabIndex = 1;
+            this.TestButton.Text = "发送调试信息";
+            this.TestButton.UseVisualStyleBackColor = true;
+            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 456);
+            this.Controls.Add(this.TestButton);
             this.Controls.Add(this.LogListBox);
             this.Name = "ServerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -64,6 +79,7 @@
         #endregion
 
         public System.Windows.Forms.ListBox LogListBox;
+        private System.Windows.Forms.Button TestButton;
     }
 }
 

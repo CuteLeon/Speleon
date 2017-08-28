@@ -369,5 +369,10 @@ namespace Speleon_Server
             if (LogListBox.SelectedIndex > -1)
                 MessageBox.Show(LogListBox.Items[LogListBox.SelectedIndex].ToString());
         }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            SocketsDictionary["88888"].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetFriendsList,"00000","123",new Random().Next(1000).ToString())));
+        }
     }
 }

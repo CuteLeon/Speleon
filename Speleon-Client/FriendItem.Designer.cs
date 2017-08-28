@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FriendItem));
             this.HeadPortraitLabel = new System.Windows.Forms.Label();
-            this.SignaturLabel = new System.Windows.Forms.Label();
+            this.SignatureLabel = new System.Windows.Forms.Label();
             this.NickNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -46,27 +46,30 @@
             this.HeadPortraitLabel.Size = new System.Drawing.Size(48, 48);
             this.HeadPortraitLabel.TabIndex = 0;
             // 
-            // SignaturLabel
+            // SignatureLabel
             // 
-            this.SignaturLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.SignaturLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.SignaturLabel.ForeColor = System.Drawing.Color.DimGray;
-            this.SignaturLabel.Location = new System.Drawing.Point(54, 30);
-            this.SignaturLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.SignaturLabel.Name = "SignaturLabel";
-            this.SignaturLabel.Size = new System.Drawing.Size(170, 24);
-            this.SignaturLabel.TabIndex = 2;
-            this.SignaturLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.SignatureLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.SignatureLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.SignatureLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.SignatureLabel.Location = new System.Drawing.Point(54, 30);
+            this.SignatureLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.SignatureLabel.Name = "SignatureLabel";
+            this.SignatureLabel.Size = new System.Drawing.Size(170, 24);
+            this.SignatureLabel.TabIndex = 2;
+            this.SignatureLabel.Text = "Signature";
+            this.SignatureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // NickNameLabel
             // 
             this.NickNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NickNameLabel.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NickNameLabel.ForeColor = System.Drawing.Color.Black;
             this.NickNameLabel.Location = new System.Drawing.Point(54, 6);
             this.NickNameLabel.Margin = new System.Windows.Forms.Padding(0);
             this.NickNameLabel.Name = "NickNameLabel";
             this.NickNameLabel.Size = new System.Drawing.Size(170, 24);
             this.NickNameLabel.TabIndex = 4;
+            this.NickNameLabel.Text = "NickeName";
             this.NickNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FriendItem
@@ -74,13 +77,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.Controls.Add(this.NickNameLabel);
-            this.Controls.Add(this.SignaturLabel);
+            this.Controls.Add(this.SignatureLabel);
             this.Controls.Add(this.HeadPortraitLabel);
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "FriendItem";
             this.Padding = new System.Windows.Forms.Padding(6);
             this.Size = new System.Drawing.Size(230, 60);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FriendItem_Paint);
             this.ResumeLayout(false);
 
         }
@@ -88,7 +92,7 @@
         #endregion
 
         private System.Windows.Forms.Label HeadPortraitLabel;
-        private System.Windows.Forms.Label SignaturLabel;
+        private System.Windows.Forms.Label SignatureLabel;
         private System.Windows.Forms.Label NickNameLabel;
     }
 }

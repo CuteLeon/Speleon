@@ -98,6 +98,9 @@ namespace Speleon_Client
             CloseButton.MouseLeave += new EventHandler(delegate (object s, EventArgs ea) { CloseButton.Image = UnityResource.Close_0 as Image; });
             CloseButton.MouseDown += new MouseEventHandler(delegate (object s, MouseEventArgs mea) { CloseButton.Image = UnityResource.Close_2; });
 
+            //为 FriendItem 赋值 ParentPanel 属性
+            FriendItem.ParentPanel = FriendsFlowPanel;
+
             UnityModule.DebugPrint("窗体加载成功");
         }
 
@@ -380,12 +383,20 @@ namespace Speleon_Client
                                     this.Invoke(new Action(() =>
                                     {
                                         UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
-                                        FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
-                                        
-                                        //默认好友聊天历史记录最早一条MessageID=0
-                                        if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
-                                        //todo:创建好友聊天记录控件
 
+                                        if (FriendItem.FriendExisted(FriendID))
+                                        {
+                                            //TODO:如果 FriendID已经存在，且FriendItem不为null，仅更新FriendID的信息，此特性可以在服务端用于有用户更新了资料时，立即向好友客户端更新资料
+                                            FriendItem.GetFriendItemByFriendID(FriendID)?.SetNickNameAndSignature(NickName,Signature);
+                                        }
+                                        else
+                                        {
+                                            //新添加 FriendItem！！！
+                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
+                                            //默认好友聊天历史记录最早一条MessageID=0
+                                            if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
+                                            //todo:创建好友聊天记录控件
+                                        }
                                     }));
                                     break;
                                 }
@@ -465,7 +476,7 @@ namespace Speleon_Client
                 //连接失败时需要结束
             }
 
-            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",ChatInputTextBox.Text)));
+            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 
 
