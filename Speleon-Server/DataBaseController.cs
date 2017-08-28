@@ -37,7 +37,8 @@ namespace Speleon_Server
                 if (DataBaseConnection != null && DataBaseConnection.State == ConnectionState.Open)
                     CloseConnection();
 
-                string DataBasePath = @"F:\C Sharp (C#)\Speleon\DataBase\ChatDB.mdb";
+                string DataBasePath = AppDomain.CurrentDomain.BaseDirectory + "\\ChatDB.mdb";
+
                 DataBaseConnection = new OleDbConnection();
                 DataBaseConnection.ConnectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0}", DataBasePath);
                 DataBaseCommand = new OleDbCommand() { Connection=DataBaseConnection};

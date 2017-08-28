@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -61,14 +62,21 @@ namespace Speleon_Server
             }
             else
             {
-                MessageBox.Show("数据库连接创建失败！服务端无法启动！");
+                //其实不用数据库，也可以转发两个同时在线的客户端的消息，但是不连接数据库时无法验证客户端登录，所以不允许启动
+                UnityModule.DebugPrint("数据库连接创建失败！服务端无法启动！");
+
+                //todo:Exit();方法无法关闭进程，可能有释放操作未处理，暂且先强行杀掉进程
+                Process.GetCurrentProcess().Kill();
                 Application.Exit();
             }
             if (!ServerStartListen())
             {
-                MessageBox.Show("服务端 Socket 创建失败！服务端无法启动！");
-                return;
+                UnityModule.DebugPrint("服务端 Socket 创建失败！服务端无法启动！");
+
+                Process.GetCurrentProcess().Kill();
+                Application.Exit();
             }
+
             ListenThread = new Thread(new ThreadStart(ListenClientConnect));
             ListenThread.Start();
         }
@@ -94,18 +102,23 @@ namespace Speleon_Server
 
         private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (Thread clientThread in ReceiveThreadDictionary.Values)
+            try
             {
-                clientThread.Abort();
+                foreach (Thread clientThread in ReceiveThreadDictionary.Values)
+                {
+                    clientThread.Abort();
+                }
+                foreach (Socket clientSocket in SocketsDictionary.Values)
+                {
+                    clientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ServerShutdown)));
+                    clientSocket.Close();
+                }
+                ServerSocket?.Close();
+                ListenThread?.Abort();
+                UnityDBController.CloseConnection();
             }
-            foreach (Socket clientSocket in SocketsDictionary.Values)
-            {
-                clientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ServerShutdown)));
-                clientSocket.Close();
-            }
-            ServerSocket?.Close();
-            ListenThread?.Abort();
-            UnityDBController.CloseConnection();
+            catch { }
+            Application.Exit();
         }
 
         /// <summary>
