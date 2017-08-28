@@ -42,7 +42,7 @@ namespace Speleon_Server
         /// <summary>
         /// 数据库控制器
         /// </summary>
-        DataBaseController UnityDBControl = new DataBaseController();
+        DataBaseController UnityDBController = new DataBaseController();
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace Speleon_Server
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            if (UnityDBControl.CreateConnection())
+            if (UnityDBController.CreateConnection())
             {
                 UnityModule.DebugPrint("数据库连接创建成功！");
             }
@@ -105,7 +105,7 @@ namespace Speleon_Server
             }
             ServerSocket?.Close();
             ListenThread?.Abort();
-            UnityDBControl.CloseConnection();
+            UnityDBController.CloseConnection();
         }
 
         /// <summary>
@@ -178,19 +178,19 @@ namespace Speleon_Server
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ClientMessage);
                                     string ToID = MessageMatchResult.Groups["TOID"].Value;
-                                    string Message = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value as string));
-                                    UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}", USERID, ToID, Message);
-                                    //todo:转发消息
+                                    string Message = MessageMatchResult.Groups["MESSAGE"].Value;
 
+                                    UnityModule.DebugPrint("消息来自:{0} 发送给:{1} 内容:{2}", USERID, ToID, Encoding.UTF8.GetString(Convert.FromBase64String(Message)));
+                                    
                                     //判断对方是否连接
                                     if (SocketsDictionary.ContainsKey(ToID))
                                     {
-                                        //todo:把消息储存进数据库
+                                        UnityDBController.ExecuteNonQuery("INSERT INTO CHATBASE (FromID,ToID,ChatTime,Message,SentYet) VALUES ('{0}','{1}','{2}','{3}',YES)", USERID, ToID, DateTime.UtcNow, Message);
                                         SocketsDictionary[ToID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage, USERID, Message)));
                                     }
                                     else
                                     {
-                                        //todo:判断用户是否注册？=>把消息寄存在数据库，未发送标志记为真，等待用户上线发送给用户
+                                        UnityDBController.ExecuteNonQuery("INSERT INTO CHATBASE (FromID,ToID,ChatTime,Message,SentYet) VALUES ('{0}','{1}','{2}','{3}',NO)", USERID,ToID,DateTime.UtcNow,Message);
                                     }
 
                                     break;
@@ -204,7 +204,7 @@ namespace Speleon_Server
                                     string UserID = MessageMatchResult.Groups["USERID"].Value;
                                     string Password = MessageMatchResult.Groups["PASSWORD"].Value;
 
-                                    object CheckUserID = UnityDBControl.ExecuteScalar("SELECT UserID FROM UserBase WHERE UserID='{0}' AND Password='{1}';", UserID, Password);
+                                    object CheckUserID = UnityDBController.ExecuteScalar("SELECT UserID FROM UserBase WHERE UserID='{0}' AND Password='{1}';", UserID, Password);
                                     if (CheckUserID != null)
                                     {
                                         //用户登陆成功！
@@ -244,14 +244,14 @@ namespace Speleon_Server
                                     //以USERID为KEY，记录Socket
                                     SocketsDictionary.Add(USERID, ClientSocket);
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        UnityModule.ServerNickName, "你好,\n欢迎登录 Speleon !")));
+                                        UnityModule.ServerNickName, Convert.ToBase64String(Encoding.UTF8.GetBytes("你好,\n欢迎登录 Speleon !")))));
 
                                     UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID, ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
                                     break;
                                 }
                             case "GETFRIENDSLIST":
                                 {
-                                    OleDbDataReader FriendsListReader = UnityDBControl.ExecuteReader("SELECT UserID,NickName,Signature FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')", USERID);
+                                    OleDbDataReader FriendsListReader = UnityDBController.ExecuteReader("SELECT UserID,NickName,Signature FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')", USERID);
                                     //查询为空即返回，注意不要return，仅break；
                                     if (FriendsListReader == null || !FriendsListReader.HasRows)
                                     {
@@ -294,7 +294,7 @@ namespace Speleon_Server
                                 {
                                     UnityModule.DebugPrint("遇到未知消息：{0}", ClientMessage);
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        "ServerSystem", "服务端收到你发来未知的CMDTYPE：" + cmdType + "    消息原文：" + ClientMessage)));
+                                        UnityModule.ServerNickName, Convert.ToBase64String(Encoding.UTF8.GetBytes("服务端收到你发来未知的CMDTYPE：" + cmdType + "    消息原文：" + ClientMessage)))));
                                     break;
                                 }
                         }
@@ -308,5 +308,10 @@ namespace Speleon_Server
             }
         }
 
+        private void LogListBox_DoubleClick(object sender, EventArgs e)
+        {
+            if (LogListBox.SelectedIndex > -1)
+                MessageBox.Show(LogListBox.Items[LogListBox.SelectedIndex].ToString());
+        }
     }
 }

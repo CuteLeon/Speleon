@@ -41,9 +41,6 @@ namespace Speleon_Client
             set => SignaturLabel.Text = value;
         }
 
-
-
-
         /// <summary>
         /// 好友条目
         /// </summary>
@@ -66,6 +63,8 @@ namespace Speleon_Client
             NickName = nickName;
             Signature = signature;
         }
+
+
 
     }
 }

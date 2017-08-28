@@ -36,12 +36,12 @@
             this.CloseButton = new System.Windows.Forms.Label();
             this.FriendsFlowPanel = new Speleon_Client.MyFlowLayoutPanel();
             this.MainPanel = new Speleon_Client.MyPanel();
-            this.SendChatPanel = new Speleon_Client.MyPanel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ChatSendPanel = new Speleon_Client.MyPanel();
+            this.ChatSendButton = new Speleon_Client.LabelButton();
+            this.ChatInputTextBox = new System.Windows.Forms.TextBox();
             this.TitlePanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
-            this.SendChatPanel.SuspendLayout();
+            this.ChatSendPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TitlePanel
@@ -112,7 +112,7 @@
             this.TitleLabel.Location = new System.Drawing.Point(0, 0);
             this.TitleLabel.MaximumSize = new System.Drawing.Size(180, 30);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(173, 30);
+            this.TitleLabel.Size = new System.Drawing.Size(180, 30);
             this.TitleLabel.TabIndex = 6;
             this.TitleLabel.Text = "Speleon-Client";
             this.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -145,43 +145,53 @@
             // 
             // MainPanel
             // 
-            this.MainPanel.Controls.Add(this.SendChatPanel);
+            this.MainPanel.Controls.Add(this.ChatSendPanel);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(230, 65);
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(490, 435);
             this.MainPanel.TabIndex = 16;
             // 
-            // SendChatPanel
+            // ChatSendPanel
             // 
-            this.SendChatPanel.Controls.Add(this.textBox1);
-            this.SendChatPanel.Controls.Add(this.button1);
-            this.SendChatPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.SendChatPanel.Location = new System.Drawing.Point(0, 356);
-            this.SendChatPanel.Name = "SendChatPanel";
-            this.SendChatPanel.Size = new System.Drawing.Size(490, 79);
-            this.SendChatPanel.TabIndex = 15;
+            this.ChatSendPanel.BackColor = System.Drawing.Color.White;
+            this.ChatSendPanel.Controls.Add(this.ChatInputTextBox);
+            this.ChatSendPanel.Controls.Add(this.ChatSendButton);
+            this.ChatSendPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ChatSendPanel.Location = new System.Drawing.Point(0, 356);
+            this.ChatSendPanel.Name = "ChatSendPanel";
+            this.ChatSendPanel.Size = new System.Drawing.Size(490, 79);
+            this.ChatSendPanel.TabIndex = 15;
             // 
-            // textBox1
+            // ChatSendButton
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(389, 79);
-            this.textBox1.TabIndex = 11;
-            this.textBox1.Text = "Hello world .";
+            this.ChatSendButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ChatSendButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ChatSendButton.ForeColor = System.Drawing.Color.Tomato;
+            this.ChatSendButton.Image = global::Speleon_Client.UnityResource.DefaultButton_0;
+            this.ChatSendButton.Location = new System.Drawing.Point(370, 0);
+            this.ChatSendButton.Name = "ChatSendButton";
+            this.ChatSendButton.Size = new System.Drawing.Size(120, 79);
+            this.ChatSendButton.TabIndex = 13;
+            this.ChatSendButton.Tag = "DefaultButton";
+            this.ChatSendButton.Text = "发送";
+            this.ChatSendButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ChatSendButton.Click += new System.EventHandler(this.ChatSendButton_Click);
             // 
-            // button1
+            // ChatInputTextBox
             // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button1.Location = new System.Drawing.Point(389, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(101, 79);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "发送";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ChatInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.ChatInputTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChatInputTextBox.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ChatInputTextBox.Location = new System.Drawing.Point(0, 0);
+            this.ChatInputTextBox.MaxLength = 18000;
+            this.ChatInputTextBox.Multiline = true;
+            this.ChatInputTextBox.Name = "ChatInputTextBox";
+            this.ChatInputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.ChatInputTextBox.Size = new System.Drawing.Size(370, 79);
+            this.ChatInputTextBox.TabIndex = 14;
+            this.ChatInputTextBox.Text = "I am just a test message from  user-88888,now i am on my way to server.cant wait " +
+    "anymore.let\'s go.\r\njust do IT.\r\nPain past is pleasure.\r\nnow ... now ... now ...";
             // 
             // ClientForm
             // 
@@ -202,8 +212,8 @@
             this.Resize += new System.EventHandler(this.ClientForm_Resize);
             this.TitlePanel.ResumeLayout(false);
             this.MainPanel.ResumeLayout(false);
-            this.SendChatPanel.ResumeLayout(false);
-            this.SendChatPanel.PerformLayout();
+            this.ChatSendPanel.ResumeLayout(false);
+            this.ChatSendPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -218,8 +228,8 @@
         private LabelButton MinButton;
         private MyFlowLayoutPanel FriendsFlowPanel;
         private MyPanel MainPanel;
-        private MyPanel SendChatPanel;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private MyPanel ChatSendPanel;
+        private LabelButton ChatSendButton;
+        private System.Windows.Forms.TextBox ChatInputTextBox;
     }
 }

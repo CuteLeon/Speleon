@@ -121,7 +121,7 @@ namespace Speleon_Server
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0],Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])));
+                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
                     case CMDType.GetFriendsList:

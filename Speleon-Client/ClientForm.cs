@@ -405,7 +405,10 @@ namespace Speleon_Client
 
         #endregion
 
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        private void ChatSendButton_Click(object sender, EventArgs e)
         {
             if (UnitySocket == null)
             {
@@ -418,8 +421,9 @@ namespace Speleon_Client
                 //连接失败时需要结束
             }
 
-            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",textBox1.Text)));
+            UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,"66666",ChatInputTextBox.Text)));
         }
+
 
     }
 }

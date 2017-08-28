@@ -45,7 +45,7 @@ namespace Speleon_Server
                 ((Application.OpenForms[0]) as ServerForm).LogListBox.SelectedIndex = (((Application.OpenForms[0]) as ServerForm).LogListBox.Items.Count - 1);
             }
             catch (Exception) { }
-            //Debug.Print("服务端："+DebugInfo);
+            Debug.Print("///服务端："+DebugInfo);
         }
 
         /// <summary>

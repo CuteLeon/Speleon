@@ -43,6 +43,7 @@
             this.LogListBox.Name = "LogListBox";
             this.LogListBox.Size = new System.Drawing.Size(660, 456);
             this.LogListBox.TabIndex = 0;
+            this.LogListBox.DoubleClick += new System.EventHandler(this.LogListBox_DoubleClick);
             // 
             // ServerForm
             // 
