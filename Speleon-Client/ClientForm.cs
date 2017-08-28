@@ -44,6 +44,11 @@ namespace Speleon_Client
         }
 
         /// <summary>
+        /// 字典用于记录每个好友的聊天记录最早一条MessageID，再次拉取聊天记录时需要从此记录往前查找
+        /// </summary>
+        Dictionary<string, int> FriendsFirstMessageID=new Dictionary<string, int>();
+
+        /// <summary>
         /// 全局TCPSocket
         /// </summary>
         Socket UnitySocket;
@@ -328,17 +333,19 @@ namespace Speleon_Client
                             case "CHATMESSAGE":
                                 {
                                     string FromID=null,Message = null;
+                                    int MessageID;
                                     DateTime ChatTime;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
-                                    FromID = MessageMatchResult.Groups["FROMID"].Value.ToString();
+                                    FromID = MessageMatchResult.Groups["FROMID"].Value;
                                     ChatTime = DateTime.TryParse(MessageMatchResult.Groups["CHATTIME"].Value.ToString(),out ChatTime) ? ChatTime.ToLocalTime():DateTime.Now;
-                                    Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value.ToString()));
+                                    MessageID = int.Parse(MessageMatchResult.Groups["MESSAGEID"].Value);
+                                    Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value));
 
                                     this.Invoke(new Action(() =>
                                     {
-                                        new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：",ChatTime.ToString(), FromID),MyMessageBox.IconType.Info).Show(this);
+                                        new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：", ChatTime.ToString(), FromID), MyMessageBox.IconType.Info) {Text="MessageID = " + MessageID.ToString()}.Show(this);
                                     }));
                                     break;
                                 }
@@ -356,6 +363,11 @@ namespace Speleon_Client
                                     {
                                         UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
                                         FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
+                                        
+                                        //默认好友聊天历史记录最早一条MessageID=0
+                                        if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
+                                        //todo:创建好友聊天记录控件
+
                                     }));
                                     break;
                                 }
@@ -366,7 +378,9 @@ namespace Speleon_Client
                                 }
                             case "MESSAGENSYCOMPLETE":
                                 {
-                                    MessageBox.Show("暂存消息发送完毕");
+                                    //准备完毕，测试用
+                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetChatHistory,Application.ProductVersion,"66666","0")));
+
                                     break;
                                 }
                             case "ANOTHORSIGNIN":

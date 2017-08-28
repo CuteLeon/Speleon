@@ -62,6 +62,7 @@ namespace Speleon_Client
             CheckForIllegalCrossThreadCalls = false;
 
             TitleLabel.Text = Title;
+            this.Text = Title;
             MessageLabel.Text = MessageText;
             IconLabel.Image = UnityResource.ResourceManager.GetObject(iconType.ToString()) as Image;
             if (iconType == IconType.Question)

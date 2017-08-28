@@ -50,6 +50,10 @@ namespace Speleon_Server
             /// </summary>
             GetFriendsList,
             /// <summary>
+            /// 获取聊天历史记录
+            /// </summary>
+            GetChatHistory,
+            /// <summary>
             /// 服务端关闭
             /// </summary>
             ServerShutdown,
@@ -101,6 +105,11 @@ namespace Speleon_Server
                             ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=WHOAMI_USERID=(?<USERID>.+?)\n";
                             break;
                         }
+                    case CMDType.GetChatHistory:
+                        {
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=GETCHATHISTORY_FRIENDID=(?<FRIENDID>.+?)_LASTMESSAGEID=(?<LASTMESSAGEID>.+?)\n";
+                            break;
+                        }
                     default:
                         {
                             ProtocolString = "";
@@ -133,7 +142,7 @@ namespace Speleon_Server
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_CHATTIME={1}_MESSAGE={2}\n",ProtocolValues[0],ProtocolValues[1],ProtocolValues[2]);
+                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_CHATTIME={1}_MESSAGEID={2}_MESSAGE={3}\n",ProtocolValues[0],ProtocolValues[1],ProtocolValues[2],ProtocolValues[3]);
                             break;
                         }
                     case CMDType.GetFriendsList:

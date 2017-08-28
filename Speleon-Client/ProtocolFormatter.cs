@@ -40,6 +40,10 @@ namespace Speleon_Client
             /// </summary>
             SignInSuccessfully,
             /// <summary>
+            /// 获取聊天历史记录
+            /// </summary>
+            GetChatHistory,
+            /// <summary>
             /// 登录失败
             /// </summary>
             SignInUnsuccessfully,
@@ -75,7 +79,7 @@ namespace Speleon_Client
             {
                 case CMDType.ChatMessage:
                     {
-                        ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_CHATTIME=(?<CHATTIME>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
+                        ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_CHATTIME=(?<CHATTIME>.+?)_MESSAGEID=(?<MESSAGEID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                         break;
                     }
                 case CMDType.GetFriendsList:
@@ -135,6 +139,11 @@ namespace Speleon_Client
                     case CMDType.GetMessageNotSendYet:
                         {
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETMESSAGENOTSENDYET_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
+                            break;
+                        }
+                    case CMDType.GetChatHistory:
+                        {
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETCHATHISTORY_FRIENDID={1}_LASTMESSAGEID={2}\n", ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
                             break;
                         }
                     default:
