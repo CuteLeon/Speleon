@@ -35,10 +35,10 @@
             // 
             this.LogListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.LogListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LogListBox.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LogListBox.Font = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.LogListBox.ForeColor = System.Drawing.Color.Aqua;
             this.LogListBox.FormattingEnabled = true;
-            this.LogListBox.ItemHeight = 20;
+            this.LogListBox.ItemHeight = 19;
             this.LogListBox.Location = new System.Drawing.Point(0, 0);
             this.LogListBox.Name = "LogListBox";
             this.LogListBox.Size = new System.Drawing.Size(660, 456);

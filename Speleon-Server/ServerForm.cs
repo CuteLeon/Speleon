@@ -186,7 +186,7 @@ namespace Speleon_Server
                                     if (SocketsDictionary.ContainsKey(ToID))
                                     {
                                         UnityDBController.ExecuteNonQuery("INSERT INTO CHATBASE (FromID,ToID,ChatTime,Message,SentYet) VALUES ('{0}','{1}','{2}','{3}',YES)", USERID, ToID, DateTime.UtcNow, Message);
-                                        SocketsDictionary[ToID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage, USERID, Message)));
+                                        SocketsDictionary[ToID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage, USERID,DateTime.UtcNow.ToString(), Message)));
                                     }
                                     else
                                     {
@@ -244,7 +244,7 @@ namespace Speleon_Server
                                     //以USERID为KEY，记录Socket
                                     SocketsDictionary.Add(USERID, ClientSocket);
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        UnityModule.ServerNickName, Convert.ToBase64String(Encoding.UTF8.GetBytes("你好,\n欢迎登录 Speleon !")))));
+                                        UnityModule.ServerNickName,DateTime.UtcNow.ToString(), Convert.ToBase64String(Encoding.UTF8.GetBytes("你好,\n欢迎登录 Speleon !")))));
 
                                     UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID, ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
                                     break;
@@ -277,6 +277,46 @@ namespace Speleon_Server
                                         ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetFriendsList, FriendID, NickName, Signature)));
                                     }
                                     FriendsListReader.Close();
+                                    //发送[好友列表发送完成]消息
+                                    ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.FriendsListComplete,USERID)));
+                                    break;
+                                }
+                            case "GETMESSAGENOTREADYET":
+                                {
+                                    OleDbDataReader MessageNRYReader = UnityDBController.ExecuteReader("SELECT * FROM ChatBase WHERE ToID ='{0}' AND SentYet = NO", USERID);
+                                    if (MessageNRYReader == null || !MessageNRYReader.HasRows)
+                                    {
+                                        MessageNRYReader?.Close();
+                                        break;
+                                    }
+
+                                    List<string> MessageIDList = new List<string>();
+                                    while (MessageNRYReader.Read())
+                                    {
+                                        string MessageID = null;
+                                        string FromID = null;
+                                        string ChatTime = null;
+                                        string ChatMessage = null;
+                                        try
+                                        {
+                                            MessageID = MessageNRYReader["ID"].ToString();
+                                            FromID = MessageNRYReader["FromID"] as string;
+                                            ChatTime = ((DateTime)MessageNRYReader["ChatTime"]).ToString();
+                                            ChatMessage = MessageNRYReader["Message"] as string;
+                                            MessageIDList.Add(MessageID);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            UnityModule.DebugPrint("读取消息ID{0}时遇到错误：{2}", MessageID, ex.Message);
+                                        }
+                                        ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage, FromID, ChatTime, ChatMessage)));
+                                    }
+                                    MessageNRYReader.Close();
+                                    foreach (string messageID in MessageIDList)
+                                        UnityDBController.ExecuteNonQuery("UPDATE ChatBase SET SentYet = YES WHERE ID = {0}", messageID);
+
+                                    //发送[未读消息发送完成]消息
+                                    //ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.FriendsListComplete, USERID)));
                                     break;
                                 }
                             case "SIGNOUT":
@@ -294,7 +334,7 @@ namespace Speleon_Server
                                 {
                                     UnityModule.DebugPrint("遇到未知消息：{0}", ClientMessage);
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        UnityModule.ServerNickName, Convert.ToBase64String(Encoding.UTF8.GetBytes("服务端收到你发来未知的CMDTYPE：" + cmdType + "    消息原文：" + ClientMessage)))));
+                                        UnityModule.ServerNickName,DateTime.UtcNow.ToString(), Convert.ToBase64String(Encoding.UTF8.GetBytes("服务端收到你发来未知的CMDTYPE：" + cmdType + "    消息原文：" + ClientMessage)))));
                                     break;
                                 }
                         }

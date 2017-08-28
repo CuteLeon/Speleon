@@ -328,15 +328,17 @@ namespace Speleon_Client
                             case "CHATMESSAGE":
                                 {
                                     string FromID=null,Message = null;
+                                    DateTime ChatTime;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
                                     FromID = MessageMatchResult.Groups["FROMID"].Value.ToString();
+                                    ChatTime = DateTime.TryParse(MessageMatchResult.Groups["CHATTIME"].Value.ToString(),out ChatTime) ? ChatTime.ToLocalTime():DateTime.Now;
                                     Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value.ToString()));
 
                                     this.Invoke(new Action(() =>
                                     {
-                                        new MyMessageBox(Message, "来自 [" + FromID + "] 的消息：",MyMessageBox.IconType.Info).Show(this);
+                                        new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：",ChatTime.ToString(), FromID),MyMessageBox.IconType.Info).Show(this);
                                     }));
                                     break;
                                 }
@@ -355,6 +357,11 @@ namespace Speleon_Client
                                         UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
                                         FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
                                     }));
+                                    break;
+                                }
+                            case "FRIENDSLISTCOMPLETE":
+                                {
+                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetMessageNotReadYet,Application.ProductVersion,UnityModule.USERID)));
                                     break;
                                 }
                             case "ANOTHORSIGNIN":

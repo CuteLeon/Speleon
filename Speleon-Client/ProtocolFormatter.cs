@@ -24,6 +24,14 @@ namespace Speleon_Client
             /// </summary>
             GetFriendsList,
             /// <summary>
+            /// 好友列表发送完成
+            /// </summary>
+            FriendsListComplete,
+            /// <summary>
+            /// 获取未读消息
+            /// </summary>
+            GetMessageNotReadYet,
+            /// <summary>
             /// 登录成功
             /// </summary>
             SignInSuccessfully,
@@ -63,7 +71,7 @@ namespace Speleon_Client
             {
                 case CMDType.ChatMessage:
                     {
-                        ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
+                        ProtocolString = "HI_CMDTYPE=CHATMESSAGE_FROMID=(?<FROMID>.+?)_CHATTIME=(?<CHATTIME>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                         break;
                     }
                 case CMDType.GetFriendsList:
@@ -118,6 +126,11 @@ namespace Speleon_Client
                     case CMDType.SignOut:
                         {
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=SIGNOUT_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
+                            break;
+                        }
+                    case CMDType.GetMessageNotReadYet:
+                        {
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETMESSAGENOTREADYET_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
                     default:

@@ -30,6 +30,14 @@ namespace Speleon_Server
             /// </summary>
             SignInUnsuccessfully,
             /// <summary>
+            /// 好友列表发送完成
+            /// </summary>
+            FriendsListComplete,
+            /// <summary>
+            /// 获取未读消息
+            /// </summary>
+            GetMessageNotReadYet,
+            /// <summary>
             /// 用户报告
             /// </summary>
             WhoAmI,
@@ -121,7 +129,7 @@ namespace Speleon_Server
                 {
                     case CMDType.ChatMessage:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_MESSAGE={1}\n",ProtocolValues[0],ProtocolValues[1]);
+                            ProtocolString = string.Format("HI_CMDTYPE=CHATMESSAGE_FROMID={0}_CHATTIME={1}_MESSAGE={2}\n",ProtocolValues[0],ProtocolValues[1],ProtocolValues[2]);
                             break;
                         }
                     case CMDType.GetFriendsList:
@@ -137,6 +145,11 @@ namespace Speleon_Server
                     case CMDType.SignInUnsuccessfully:
                         {
                             ProtocolString = string.Format("HI_CMDTYPE=SIGNINUNSUCCESSFULLY_USERID={0}\n", ProtocolValues[0]);
+                            break;
+                        }
+                    case CMDType.FriendsListComplete:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=FRIENDSLISTCOMPLETE_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
                     case CMDType.AnothorSignIn:

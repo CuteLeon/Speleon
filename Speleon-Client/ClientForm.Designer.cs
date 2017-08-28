@@ -37,8 +37,8 @@
             this.FriendsFlowPanel = new Speleon_Client.MyFlowLayoutPanel();
             this.MainPanel = new Speleon_Client.MyPanel();
             this.ChatSendPanel = new Speleon_Client.MyPanel();
-            this.ChatSendButton = new Speleon_Client.LabelButton();
             this.ChatInputTextBox = new System.Windows.Forms.TextBox();
+            this.ChatSendButton = new Speleon_Client.LabelButton();
             this.TitlePanel.SuspendLayout();
             this.MainPanel.SuspendLayout();
             this.ChatSendPanel.SuspendLayout();
@@ -163,21 +163,6 @@
             this.ChatSendPanel.Size = new System.Drawing.Size(490, 79);
             this.ChatSendPanel.TabIndex = 15;
             // 
-            // ChatSendButton
-            // 
-            this.ChatSendButton.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ChatSendButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ChatSendButton.ForeColor = System.Drawing.Color.Tomato;
-            this.ChatSendButton.Image = global::Speleon_Client.UnityResource.DefaultButton_0;
-            this.ChatSendButton.Location = new System.Drawing.Point(370, 0);
-            this.ChatSendButton.Name = "ChatSendButton";
-            this.ChatSendButton.Size = new System.Drawing.Size(120, 79);
-            this.ChatSendButton.TabIndex = 13;
-            this.ChatSendButton.Tag = "DefaultButton";
-            this.ChatSendButton.Text = "发送";
-            this.ChatSendButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.ChatSendButton.Click += new System.EventHandler(this.ChatSendButton_Click);
-            // 
             // ChatInputTextBox
             // 
             this.ChatInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -192,6 +177,21 @@
             this.ChatInputTextBox.TabIndex = 14;
             this.ChatInputTextBox.Text = "I am just a test message from  user-88888,now i am on my way to server.cant wait " +
     "anymore.let\'s go.\r\njust do IT.\r\nPain past is pleasure.\r\nnow ... now ... now ...";
+            // 
+            // ChatSendButton
+            // 
+            this.ChatSendButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ChatSendButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ChatSendButton.ForeColor = System.Drawing.Color.Tomato;
+            this.ChatSendButton.Image = global::Speleon_Client.UnityResource.DefaultButton_0;
+            this.ChatSendButton.Location = new System.Drawing.Point(370, 0);
+            this.ChatSendButton.Name = "ChatSendButton";
+            this.ChatSendButton.Size = new System.Drawing.Size(120, 79);
+            this.ChatSendButton.TabIndex = 13;
+            this.ChatSendButton.Tag = "DefaultButton";
+            this.ChatSendButton.Text = "发送";
+            this.ChatSendButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ChatSendButton.Click += new System.EventHandler(this.ChatSendButton_Click);
             // 
             // ClientForm
             // 
