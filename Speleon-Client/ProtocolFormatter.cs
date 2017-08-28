@@ -28,9 +28,13 @@ namespace Speleon_Client
             /// </summary>
             FriendsListComplete,
             /// <summary>
-            /// 获取未读消息
+            /// 获取暂存消息
             /// </summary>
-            GetMessageNotReadYet,
+            GetMessageNotSendYet,
+            /// <summary>
+            /// 暂存消息发送完成
+            /// </summary>
+            MessageNSYComplete,
             /// <summary>
             /// 登录成功
             /// </summary>
@@ -128,9 +132,9 @@ namespace Speleon_Client
                             ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=SIGNOUT_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
-                    case CMDType.GetMessageNotReadYet:
+                    case CMDType.GetMessageNotSendYet:
                         {
-                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETMESSAGENOTREADYET_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETMESSAGENOTSENDYET_USERID={1}\n",ProtocolValues[0],ProtocolValues[1]);
                             break;
                         }
                     default:

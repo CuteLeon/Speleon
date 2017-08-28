@@ -34,9 +34,13 @@ namespace Speleon_Server
             /// </summary>
             FriendsListComplete,
             /// <summary>
-            /// 获取未读消息
+            /// 获取暂存消息
             /// </summary>
-            GetMessageNotReadYet,
+            GetMessageNotSendYet,
+            /// <summary>
+            /// 暂存消息发送完成
+            /// </summary>
+            MessageNSYComplete,
             /// <summary>
             /// 用户报告
             /// </summary>
@@ -150,6 +154,11 @@ namespace Speleon_Server
                     case CMDType.FriendsListComplete:
                         {
                             ProtocolString = string.Format("HI_CMDTYPE=FRIENDSLISTCOMPLETE_USERID={0}\n",ProtocolValues[0]);
+                            break;
+                        }
+                    case CMDType.MessageNSYComplete:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=MESSAGENSYCOMPLETE_USERID={0}\n",ProtocolValues[0]);
                             break;
                         }
                     case CMDType.AnothorSignIn:

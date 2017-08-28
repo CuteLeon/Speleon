@@ -281,7 +281,7 @@ namespace Speleon_Server
                                     ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.FriendsListComplete,USERID)));
                                     break;
                                 }
-                            case "GETMESSAGENOTREADYET":
+                            case "GETMESSAGENOTSENDYET":
                                 {
                                     OleDbDataReader MessageNRYReader = UnityDBController.ExecuteReader("SELECT * FROM ChatBase WHERE ToID ='{0}' AND SentYet = NO", USERID);
                                     if (MessageNRYReader == null || !MessageNRYReader.HasRows)
@@ -315,8 +315,8 @@ namespace Speleon_Server
                                     foreach (string messageID in MessageIDList)
                                         UnityDBController.ExecuteNonQuery("UPDATE ChatBase SET SentYet = YES WHERE ID = {0}", messageID);
 
-                                    //发送[未读消息发送完成]消息
-                                    //ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.FriendsListComplete, USERID)));
+                                    //发送[暂存消息发送完成]消息
+                                    ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.MessageNSYComplete, USERID)));
                                     break;
                                 }
                             case "SIGNOUT":

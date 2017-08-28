@@ -361,7 +361,12 @@ namespace Speleon_Client
                                 }
                             case "FRIENDSLISTCOMPLETE":
                                 {
-                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetMessageNotReadYet,Application.ProductVersion,UnityModule.USERID)));
+                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetMessageNotSendYet,Application.ProductVersion,UnityModule.USERID)));
+                                    break;
+                                }
+                            case "MESSAGENSYCOMPLETE":
+                                {
+                                    MessageBox.Show("暂存消息发送完毕");
                                     break;
                                 }
                             case "ANOTHORSIGNIN":
