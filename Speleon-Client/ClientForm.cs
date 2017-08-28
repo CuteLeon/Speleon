@@ -349,6 +349,24 @@ namespace Speleon_Client
                                     }));
                                     break;
                                 }
+                            case "GETCHATHISTORY":
+                                {
+                                    //todo:显示历史聊天记录
+                                    string FromID = "";
+                                    int MessageID = 0;
+                                    //更新本地第一条聊天记录MessageID
+                                    if (FriendsFirstMessageID.ContainsKey(FromID))
+                                    {
+                                        //如果遇到更小的MessageID，只有
+                                        if (MessageID < FriendsFirstMessageID[FromID]) FriendsFirstMessageID[FromID] = MessageID;
+                                    }
+                                    else
+                                    {
+                                        //估计运行不到这里
+                                        FriendsFirstMessageID.Add(FromID, MessageID);
+                                    }
+                                    break;
+                                }
                             case "GETFRIENDSLIST":
                                 {
                                     string FriendID = null, NickName = null,Signature=null;

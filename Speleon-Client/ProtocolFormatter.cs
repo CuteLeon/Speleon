@@ -143,7 +143,7 @@ namespace Speleon_Client
                         }
                     case CMDType.GetChatHistory:
                         {
-                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETCHATHISTORY_FRIENDID={1}_LASTMESSAGEID={2}\n", ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
+                            ProtocolString = string.Format("HEY_CVER={0}_CMDTYPE=GETCHATHISTORY_FRIENDID={1}_FIRSTMESSAGEID={2}\n", ProtocolValues[0], ProtocolValues[1], ProtocolValues[2]);
                             break;
                         }
                     default:

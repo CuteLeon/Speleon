@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Speleon_Client
 {
-    class MyFlowLayoutPanel : FlowLayoutPanel
+    public class MyFlowLayoutPanel : FlowLayoutPanel
     {
         /// <summary>
         /// 此类用于扩展 Forms.MyFlowLayoutPanel 防止窗体改变大小时频繁闪烁

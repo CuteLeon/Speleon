@@ -14,6 +14,21 @@ namespace Speleon_Client
     {
 
         /// <summary>
+        /// 放置 FrinedItem 的流式布局容器
+        /// </summary>
+        public static MyFlowLayoutPanel ParentPanel = null;
+
+        /// <summary>
+        /// 当前激活的 FriendItem
+        /// </summary>
+        public static FriendItem ActiveFrined = null;
+
+        /// <summary>
+        /// FriendID和FriendItem字典
+        /// </summary>
+        private static Dictionary<string, FriendItem> DADictionary = new Dictionary<string, FriendItem>();
+
+        /// <summary>
         /// 好友ID (只读属性)
         /// </summary>
         private readonly string _friendID = "";

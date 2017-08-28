@@ -95,6 +95,11 @@ namespace Speleon_Server
                             ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=CHATMESSAGE_TOID=(?<TOID>.+?)_MESSAGE=(?<MESSAGE>.+?)\n";
                             break;
                         }
+                    case CMDType.GetChatHistory:
+                        {
+                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=GETCHATHISTORY_FRIENDID=(?<FRIENDID>.+?)_FIRSTMESSAGEID=(?<FIRSTMESSAGEID>.+?)\n";
+                            break;
+                        }
                     case CMDType.SignIn:
                         {
                             ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=SIGNIN_USERID=(?<USERID>.+?)_PASSWORD=(?<PASSWORD>.+?)\n";
@@ -103,11 +108,6 @@ namespace Speleon_Server
                     case CMDType.WhoAmI:
                         {
                             ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=WHOAMI_USERID=(?<USERID>.+?)\n";
-                            break;
-                        }
-                    case CMDType.GetChatHistory:
-                        {
-                            ProtocolString = "HEY_CVER=(?<CLIENTVERSION>.+?)_CMDTYPE=GETCHATHISTORY_FRIENDID=(?<FRIENDID>.+?)_LASTMESSAGEID=(?<LASTMESSAGEID>.+?)\n";
                             break;
                         }
                     default:
