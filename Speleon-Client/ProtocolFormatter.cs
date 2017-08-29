@@ -28,6 +28,14 @@ namespace Speleon_Client
             /// </summary>
             FriendsListComplete,
             /// <summary>
+            /// 好友登录
+            /// </summary>
+            FriendSignIn,
+            /// <summary>
+            /// 好友注销登录
+            /// </summary>
+            FriendSignOut,
+            /// <summary>
             /// 获取暂存消息
             /// </summary>
             GetMessageNotSendYet,
@@ -84,7 +92,17 @@ namespace Speleon_Client
                     }
                 case CMDType.GetFriendsList:
                     {
-                        ProtocolString = "HI_CMDTYPE=GETFRIENDSLIST_FRIENDID=(?<FRIENDID>.+?)_NICKNAME=(?<NICKNAME>.+?)_SIGNATURE=(?<SIGNATURE>.+?)\n";
+                        ProtocolString = "HI_CMDTYPE=GETFRIENDSLIST_FRIENDID=(?<FRIENDID>.+?)_NICKNAME=(?<NICKNAME>.+?)_SIGNATURE=(?<SIGNATURE>.+?)_ONLINE=(?<ONLINE>.+?)\n";
+                        break;
+                    }
+                case CMDType.FriendSignIn:
+                    {
+                        ProtocolString = "HI_CMDTYPE=FRIENDSIGNIN_FRIENDID=(?<FRIENDID>.+?)\n";
+                        break;
+                    }
+                case CMDType.FriendSignOut:
+                    {
+                        ProtocolString = "HI_CMDTYPE=FRIENDSIGNOUT_FRIENDID=(?<FRIENDID>.+?)\n";
                         break;
                     }
                 default:

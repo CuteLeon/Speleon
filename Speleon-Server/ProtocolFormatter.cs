@@ -46,6 +46,14 @@ namespace Speleon_Server
             /// </summary>
             WhoAmI,
             /// <summary>
+            /// 好友登录
+            /// </summary>
+            FriendSignIn,
+            /// <summary>
+            /// 好友注销登录
+            /// </summary>
+            FriendSignOut,
+            /// <summary>
             /// 获取好友列表
             /// </summary>
             GetFriendsList,
@@ -147,7 +155,7 @@ namespace Speleon_Server
                         }
                     case CMDType.GetFriendsList:
                         {
-                            ProtocolString = string.Format("HI_CMDTYPE=GETFRIENDSLIST_FRIENDID={0}_NICKNAME={1}_SIGNATURE={2}\n",ProtocolValues[0], Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])), Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[2])));
+                            ProtocolString = string.Format("HI_CMDTYPE=GETFRIENDSLIST_FRIENDID={0}_NICKNAME={1}_SIGNATURE={2}_ONLINE={3}\n",ProtocolValues[0], Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[1])), Convert.ToBase64String(Encoding.UTF8.GetBytes(ProtocolValues[2])),ProtocolValues[3]);
                             break;
                         }
                     case CMDType.SignInSuccessfully:
@@ -168,6 +176,16 @@ namespace Speleon_Server
                     case CMDType.MessageNSYComplete:
                         {
                             ProtocolString = string.Format("HI_CMDTYPE=MESSAGENSYCOMPLETE_USERID={0}\n",ProtocolValues[0]);
+                            break;
+                        }
+                    case CMDType.FriendSignIn:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=FRIENDSIGNIN_FRIENDID={0}\n", ProtocolValues[0]);
+                            break;
+                        }
+                    case CMDType.FriendSignOut:
+                        {
+                            ProtocolString = string.Format("HI_CMDTYPE=FRIENDSIGNOUT_FRIENDID={0}\n", ProtocolValues[0]);
                             break;
                         }
                     case CMDType.AnothorSignIn:

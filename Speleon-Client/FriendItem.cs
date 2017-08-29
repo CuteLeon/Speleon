@@ -12,7 +12,6 @@ namespace Speleon_Client
 {
     public partial class FriendItem : UserControl, IDisposable
     {
-
         /// <summary>
         /// 点击 FriendItem
         /// </summary>
@@ -50,6 +49,30 @@ namespace Speleon_Client
                     value.Invalidate();
 
                     if (ActiveItemChanged != null)ActiveItemChanged(value,new EventArgs(){});
+                }
+            }
+        }
+
+        private bool onLine=false;
+        /// <summary>
+        /// 好友是否在线
+        /// </summary>
+        public bool OnLine
+        {
+            get => onLine;
+            set{
+                onLine = value;
+                if (value)
+                {
+                    //在线状态
+                    NickNameLabel.Font = new Font(NickNameLabel.Font, FontStyle.Regular);
+                    HeadPortraitLabel.Enabled = true;
+                }
+                else
+                {
+                    //离线状态
+                    NickNameLabel.Font = new Font(NickNameLabel.Font,FontStyle.Italic);
+                    HeadPortraitLabel.Enabled = false;
                 }
             }
         }
@@ -102,7 +125,7 @@ namespace Speleon_Client
         /// <param name="FriendID">好友ID</param>
         /// <param name="NickName">昵称</param>
         /// <param name="Signature">签名</param>
-        public FriendItem(string FriendID, string nickName, string signature)
+        public FriendItem(string FriendID, string nickName, string signature,bool isOnLine)
         {
             InitializeComponent();
 
@@ -113,6 +136,7 @@ namespace Speleon_Client
                 NickName = nickName;
                 Signature = signature;
                 FriendDictionary.Add(FriendID, this);
+                OnLine = isOnLine;
 
                 MouseEnter += new System.EventHandler(Controls_MouseEnter);
                 MouseLeave += new System.EventHandler(Controls_MouseLeave);

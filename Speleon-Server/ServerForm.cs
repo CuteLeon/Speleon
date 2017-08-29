@@ -102,11 +102,16 @@ namespace Speleon_Server
 
         private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //将所有用户在线状态置为假
+            UnityDBController.ExecuteNonQuery("UPDATE UserBase SET OnLine = NO WHERE OnLine = YES");
+            //关闭数据库连接
+            UnityDBController.CloseConnection();
+
             try
             {
                 foreach (Thread clientThread in ReceiveThreadDictionary.Values)
                 {
-                    clientThread.Abort();
+                    clientThread?.Abort();
                 }
                 foreach (Socket clientSocket in SocketsDictionary.Values)
                 {
@@ -115,9 +120,10 @@ namespace Speleon_Server
                 }
                 ServerSocket?.Close();
                 ListenThread?.Abort();
-                UnityDBController.CloseConnection();
             }
             catch { }
+            
+
             Application.Exit();
         }
 
@@ -160,13 +166,8 @@ namespace Speleon_Server
                 catch (Exception ex)
                 {
                     UnityModule.DebugPrint("接收客户端消息时遇到错误：{0}", ex.Message);
-                    if (USERID != "" && SocketsDictionary.ContainsKey(USERID))
-                        SocketsDictionary.Remove(USERID);
-                    if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
-                        ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
+                    UserSignOut(USERID, ref ClientSocket);
                     UnityModule.DebugPrint("用户 {0} 异常下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
-
-                    ClientSocket?.Close();
                     return;
                 }
 
@@ -263,15 +264,16 @@ namespace Speleon_Server
 
                                     //以USERID为KEY，记录Socket
                                     SocketsDictionary.Add(USERID, ClientSocket);
-                                    ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
-                                        UnityModule.ServerNickName,DateTime.UtcNow.ToString(),"0", Convert.ToBase64String(Encoding.UTF8.GetBytes("你好,\n欢迎登录 Speleon !")))));
+                                    
+                                    //好友登录
+                                    UserSignIn(USERID,ref ClientSocket);
 
                                     UnityModule.DebugPrint("用户 {0} 在 {1} 上线，当前在线总数：{2}", USERID, ClientSocket.RemoteEndPoint.ToString(), SocketsDictionary.Count.ToString());
                                     break;
                                 }
                             case "GETFRIENDSLIST":
                                 {
-                                    OleDbDataReader FriendsListReader = UnityDBController.ExecuteReader("SELECT UserID,NickName,Signature FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')", USERID);
+                                    OleDbDataReader FriendsListReader = UnityDBController.ExecuteReader("SELECT UserID,NickName,Signature,OnLine FROM UserBase WHERE UserID IN(SELECT Guest FROM FriendBase WHERE Host ='{0}')", USERID);
                                     if (FriendsListReader != null && FriendsListReader.HasRows)
                                     {
                                         while (FriendsListReader.Read())
@@ -279,17 +281,19 @@ namespace Speleon_Server
                                             string FriendID = null;
                                             string NickName = null;
                                             string Signature = null;
+                                            bool OnLine = false;
                                             try
                                             {
                                                 FriendID = FriendsListReader["UserID"] as string;//??""很重要，否则封装协议消息时会因为string类型变量为引用而出错
                                                 NickName = FriendsListReader["NickName"] as string ?? "(无昵称)";
                                                 Signature = FriendsListReader["Signature"] as string ?? "(无签名)";
+                                                OnLine = (bool)FriendsListReader["OnLine"];
                                             }
                                             catch (Exception ex)
                                             {
                                                 UnityModule.DebugPrint("读取用户{0}的好友{1}信息时遇到错误：{2}", USERID, FriendID, ex.Message);
                                             }
-                                            ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetFriendsList, FriendID, NickName, Signature)));
+                                            ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetFriendsList, FriendID, NickName, Signature,OnLine.ToString().ToUpper())));
                                         }
                                     }
 
@@ -337,13 +341,8 @@ namespace Speleon_Server
                                 }
                             case "SIGNOUT":
                                 {
-                                    if (USERID != "" && SocketsDictionary.ContainsKey(USERID))
-                                        SocketsDictionary.Remove(USERID);
-                                    if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
-                                        ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
+                                    UserSignOut(USERID,ref ClientSocket);
                                     UnityModule.DebugPrint("用户 {0} 正常下线，当前在线总数：{1}", USERID, SocketsDictionary.Count.ToString());
-
-                                    ClientSocket?.Close();
                                     return;
                                 }
                             default:
@@ -362,6 +361,75 @@ namespace Speleon_Server
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 好友下线，更新Socket字典、Thread字典、数据库
+        /// </summary>
+        private void UserSignOut(string USERID,ref Socket ClientSocket)
+        {
+            //关闭 Socket 和 Thread
+            if (USERID != "" && SocketsDictionary.ContainsKey(USERID))
+                SocketsDictionary.Remove(USERID);
+            if (ReceiveThreadDictionary.ContainsKey(ClientSocket?.RemoteEndPoint?.ToString()))
+                ReceiveThreadDictionary.Remove(ClientSocket?.RemoteEndPoint?.ToString());
+            ClientSocket?.Close();
+            
+            //更新数据库在线状态
+            UnityDBController.ExecuteNonQuery("UPDATE UserBase SET OnLine = NO WHERE UserID = '{0}'", USERID);
+
+            //向好友群发下线信息
+            OleDbDataReader FriendOnLineReader = UnityDBController.ExecuteReader("SELECT UserID FROM UserBase WHERE OnLine = YES AND UserID IN (SELECT Guest FROM FriendBase WHERE HOST = '{0}')", USERID);
+            if (FriendOnLineReader != null)
+            {
+                if (FriendOnLineReader.HasRows)
+                {
+                    while (FriendOnLineReader.Read())
+                    {
+                        string FriendID = FriendOnLineReader["UserID"] as string;
+                        if (SocketsDictionary.ContainsKey(FriendID))
+                        {
+                            SocketsDictionary[FriendID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.FriendSignOut, USERID)));
+                        }
+                    }
+                }
+                FriendOnLineReader.Close();
+            }
+            UnityModule.DebugPrint("向在线好友群发注销消息完成");
+        }
+
+        /// <summary>
+        /// 用户上线
+        /// </summary>
+        /// <param name="USERID"></param>
+        /// <param name="ClientSocket"></param>
+        private void UserSignIn(string USERID,ref Socket ClientSocket)
+        {
+            //发送问候语
+            ClientSocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,
+                                        UnityModule.ServerNickName, DateTime.UtcNow.ToString(), "0", Convert.ToBase64String(Encoding.UTF8.GetBytes("你好,\n欢迎登录 Speleon !")))));
+
+            //数据库更新用户上线状态
+            UnityDBController.ExecuteNonQuery("UPDATE UserBase SET OnLine = YES WHERE UserID = '{0}'", USERID);
+
+            //向好友群发上线信息
+            OleDbDataReader FriendOnLineReader = UnityDBController.ExecuteReader("SELECT UserID FROM UserBase WHERE OnLine = YES AND UserID IN (SELECT Guest FROM FriendBase WHERE HOST = '{0}')",USERID);
+            if (FriendOnLineReader != null)
+            {
+                if (FriendOnLineReader.HasRows)
+                {
+                    while (FriendOnLineReader.Read())
+                    {
+                        string FriendID = FriendOnLineReader["UserID"] as string;
+                        if (SocketsDictionary.ContainsKey(FriendID))
+                        {
+                            SocketsDictionary[FriendID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.FriendSignIn,USERID)));
+                        }
+                    }
+                }
+                FriendOnLineReader.Close();
+            }
+            UnityModule.DebugPrint("向在线好友群发登录消息完成");
         }
 
         private void LogListBox_DoubleClick(object sender, EventArgs e)

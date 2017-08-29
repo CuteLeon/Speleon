@@ -372,13 +372,14 @@ namespace Speleon_Client
                                 }
                             case "GETFRIENDSLIST":
                                 {
-                                    string FriendID = null, NickName = null,Signature=null;
+                                    string FriendID = null, NickName = null,Signature=null,OnLine=null;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
                                     FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
                                     NickName = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["NICKNAME"].Value.ToString()));
                                     Signature = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["SIGNATURE"].Value.ToString()));
+                                    OnLine = MessageMatchResult.Groups["ONLINE"].Value.ToString();
 
                                     this.Invoke(new Action(() =>
                                     {
@@ -392,12 +393,46 @@ namespace Speleon_Client
                                         else
                                         {
                                             //新添加 FriendItem！！！
-                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature));
+                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature,Convert.ToBoolean(OnLine)));
                                             //默认好友聊天历史记录最早一条MessageID=0
                                             if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
                                             //todo:创建好友聊天记录控件
                                         }
                                     }));
+                                    break;
+                                }
+                            case "FRIENDSIGNIN":
+                                {
+                                    string FriendID = null;
+                                    MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.FriendSignIn);
+                                    MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                    MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                    FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
+
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        UnityModule.DebugPrint("收到好友登录消息：{0}", FriendID);
+                                        if (FriendItem.FriendExisted(FriendID) && FriendItem.GetFriendItemByFriendID(FriendID) != null)
+                                            FriendItem.GetFriendItemByFriendID(FriendID).OnLine = true;
+                                    }));
+
+                                    break;
+                                }
+                            case "FRIENDSIGNOUT":
+                                {
+                                    string FriendID = null;
+                                    MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.FriendSignOut);
+                                    MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                                    MessageMatchResult = MessageRegex.Match(ServerMessage);
+                                    FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
+
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        UnityModule.DebugPrint("收到好友注销消息：{0}", FriendID);
+                                        if (FriendItem.FriendExisted(FriendID) && FriendItem.GetFriendItemByFriendID(FriendID) != null)
+                                            FriendItem.GetFriendItemByFriendID(FriendID).OnLine = false;
+                                    }));
+
                                     break;
                                 }
                             case "FRIENDSLISTCOMPLETE":
