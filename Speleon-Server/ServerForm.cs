@@ -395,7 +395,7 @@ namespace Speleon_Server
                 }
                 FriendOnLineReader.Close();
             }
-            UnityModule.DebugPrint("向在线好友群发注销消息完成");
+            UnityModule.DebugPrint("向在线好友群发注销消息完成。USERID = {0}",USERID);
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Speleon_Server
                 }
                 FriendOnLineReader.Close();
             }
-            UnityModule.DebugPrint("向在线好友群发登录消息完成");
+            UnityModule.DebugPrint("向在线好友群发登录消息完成。USERID = {0}", USERID);
         }
 
         private void LogListBox_DoubleClick(object sender, EventArgs e)
@@ -440,7 +440,12 @@ namespace Speleon_Server
 
         private void TestButton_Click(object sender, EventArgs e)
         {
-            SocketsDictionary["88888"].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetFriendsList,"00000","123",new Random().Next(1000).ToString())));
+            string TargetUserID = "88888";
+            ProtocolFormatter.CMDType ProtocolType = ProtocolFormatter.CMDType.GetFriendsList;
+            string[] DebugInfo = new string[] {"00000", "123", new Random().Next(1000).ToString(),true.ToString().ToUpper()};
+
+            if(SocketsDictionary.ContainsKey(TargetUserID))
+                SocketsDictionary["88888"].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolType,DebugInfo)));
         }
     }
 }

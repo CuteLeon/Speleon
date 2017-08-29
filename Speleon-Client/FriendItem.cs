@@ -223,12 +223,12 @@ namespace Speleon_Client
         /// </summary>
         /// <param name="nickName">好友昵称</param>
         /// <param name="signature">好友签名</param>
-        public void SetNickNameAndSignature(string nickName, string signature)
+        public void SetNickNameSignatureAndOnLine(string nickName, string signature,bool onLine)
         {
             UnityModule.DebugPrint("修改好友信息：{0} / {1}", NickName, Signature);
             NickName = nickName;
             Signature = signature;
-            this.Invalidate();
+            OnLine = onLine;
         }
 
         /// <summary>

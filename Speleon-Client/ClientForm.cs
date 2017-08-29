@@ -372,14 +372,14 @@ namespace Speleon_Client
                                 }
                             case "GETFRIENDSLIST":
                                 {
-                                    string FriendID = null, NickName = null,Signature=null,OnLine=null;
+                                    string FriendID = null, NickName = null,Signature=null;bool OnLine=false;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
                                     FriendID = MessageMatchResult.Groups["FRIENDID"].Value.ToString();
                                     NickName = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["NICKNAME"].Value.ToString()));
                                     Signature = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["SIGNATURE"].Value.ToString()));
-                                    OnLine = MessageMatchResult.Groups["ONLINE"].Value.ToString();
+                                    OnLine = Convert.ToBoolean(MessageMatchResult.Groups["ONLINE"].Value.ToString());
 
                                     this.Invoke(new Action(() =>
                                     {
@@ -388,12 +388,12 @@ namespace Speleon_Client
                                         if (FriendItem.FriendExisted(FriendID))
                                         {
                                             //TODO:如果 FriendID已经存在，且FriendItem不为null，仅更新FriendID的信息，此特性可以在服务端用于有用户更新了资料时，立即向好友客户端更新资料
-                                            FriendItem.GetFriendItemByFriendID(FriendID)?.SetNickNameAndSignature(NickName,Signature);
+                                            FriendItem.GetFriendItemByFriendID(FriendID)?.SetNickNameSignatureAndOnLine(NickName,Signature,OnLine);
                                         }
                                         else
                                         {
                                             //新添加 FriendItem！！！
-                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature,Convert.ToBoolean(OnLine)));
+                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature, OnLine));
                                             //默认好友聊天历史记录最早一条MessageID=0
                                             if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
                                             //todo:创建好友聊天记录控件
@@ -510,7 +510,7 @@ namespace Speleon_Client
                 //Socket未连接，需要连接
                 //连接失败时需要结束
             }
-
+            if (FriendItem.ActiveFriend == null) return;
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 
