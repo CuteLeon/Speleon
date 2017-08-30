@@ -33,7 +33,7 @@ namespace Speleon_Client
         /// 放置 FrinedItem 的流式布局容器
         /// </summary>
         public static MyFlowLayoutPanel ParentPanel = null;
-
+        
         private static FriendItem activeFriend = null;
         /// <summary>
         /// 当前激活的 FriendItem
@@ -60,6 +60,17 @@ namespace Speleon_Client
                 activeFriend = value;
             }
         }
+        
+        private static int onLineCount = 0;
+        /// <summary>
+        /// 记录当前在线好友的个数
+        /// </summary>
+        public static int OnLineCount
+        {
+            get => onLineCount;
+            //在线好友人数尽可在本类内部允许修改，外部仅可访问
+            private set => onLineCount= value;
+        }
 
         private bool onLine=false;
         /// <summary>
@@ -69,9 +80,9 @@ namespace Speleon_Client
         {
             get => onLine;
             set{
-                //todo:记录在线好有个数
+                //记录在线好有个数
                 if (onLine != value) OnLineCount += value ? 1 : -1;
-                System.Diagnostics.Debug.Print("当前在线好友："+ OnLineCount.ToString());
+
                 onLine = value;
                 if (value)
                 {
@@ -162,11 +173,6 @@ namespace Speleon_Client
         {
             InitializeComponent();
         }
-
-        /// <summary>
-        /// 记录当前在线好友的个数
-        /// </summary>
-        public int OnLineCount=0;
 
         /// <summary>
         /// 构造函数
@@ -336,8 +342,9 @@ namespace Speleon_Client
         /// </summary>
         public static void ResetStaticData()
         {
-            activeFriend?.Dispose();
+            OnLineCount = 0;
             FriendDictionary = new Dictionary<string, FriendItem>();
+            activeFriend?.Dispose();
         }
 
     }

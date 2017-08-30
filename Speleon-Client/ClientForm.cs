@@ -471,8 +471,15 @@ namespace Speleon_Client
                                     this.Invoke(new Action(() =>
                                     {
                                         UnityModule.DebugPrint("收到好友登录消息：{0}", FriendID);
-                                        if (FriendItem.FriendExisted(FriendID) && FriendItem.GetFriendItemByFriendID(FriendID) != null)
-                                            FriendItem.GetFriendItemByFriendID(FriendID).OnLine = true;
+                                        if (FriendItem.FriendExisted(FriendID))
+                                        {
+                                            FriendItem JustSignIn = FriendItem.GetFriendItemByFriendID(FriendID);
+                                            if (JustSignIn != null)
+                                            {
+                                                FriendsFlowPanel.Controls.SetChildIndex(JustSignIn,FriendItem.OnLineCount);
+                                                JustSignIn.OnLine = true;
+                                            }
+                                        }
                                     }));
 
                                     break;
@@ -488,8 +495,15 @@ namespace Speleon_Client
                                     this.Invoke(new Action(() =>
                                     {
                                         UnityModule.DebugPrint("收到好友注销消息：{0}", FriendID);
-                                        if (FriendItem.FriendExisted(FriendID) && FriendItem.GetFriendItemByFriendID(FriendID) != null)
-                                            FriendItem.GetFriendItemByFriendID(FriendID).OnLine = false;
+                                        if (FriendItem.FriendExisted(FriendID))
+                                        {
+                                            FriendItem JustSignIn = FriendItem.GetFriendItemByFriendID(FriendID);
+                                            if (JustSignIn != null)
+                                            {
+                                                JustSignIn.OnLine = false;
+                                                FriendsFlowPanel.Controls.SetChildIndex(JustSignIn, FriendItem.OnLineCount);
+                                            }
+                                        }
                                     }));
 
                                     break;
