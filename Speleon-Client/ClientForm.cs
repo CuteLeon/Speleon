@@ -442,16 +442,16 @@ namespace Speleon_Client
                                             //默认好友聊天历史记录最早一条MessageID=0
                                             if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
                                             //新添加 FriendItem
-                                            FriendItem NewFriendItem = new FriendItem(FriendID, NickName, Signature, OnLine);
-                                            NewFriendItem.RightToLeft = RightToLeft.No;
+                                            FriendItem NewFriendItem = new FriendItem(FriendID, NickName, Signature, OnLine)
+                                            {
+                                                RightToLeft = RightToLeft.No
+                                            };
                                             NewFriendItem.FriendItemClick += new EventHandler(FriendItemClick);
 
                                             //创建好友聊天记录控件
-                                            MyFlowLayoutPanel NewChatBubblePanel = new MyFlowLayoutPanel() {
+                                            MyTableLayoutPanel NewChatBubblePanel = new MyTableLayoutPanel() {
                                                 AutoScroll = true,
                                                 Dock = DockStyle.Fill,
-                                                FlowDirection = FlowDirection.TopDown,
-                                                WrapContents = false,
                                                 BackColor = Color.White,
                                                 Visible = false,
                                             };
@@ -616,7 +616,8 @@ namespace Speleon_Client
 
         private void ChatBubblesPanel_ControlAdded(object sender, ControlEventArgs e)
         {
-            ((MyFlowLayoutPanel)sender).VerticalScroll.Value = ((MyFlowLayoutPanel)sender).VerticalScroll.Maximum;
+            //todo:聊天气泡容器需要自动滚动到底部
+            //((MyFlowLayoutPanel)sender).VerticalScroll.Value = ((MyFlowLayoutPanel)sender).VerticalScroll.Maximum;
             //((MyFlowLayoutPanel)sender).AutoScrollPosition = new Point(0, ((MyFlowLayoutPanel)sender).Height);
         }
     }

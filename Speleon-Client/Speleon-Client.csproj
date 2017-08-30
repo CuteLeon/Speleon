@@ -84,11 +84,17 @@
     <Compile Include="MyMessageBox.Designer.cs">
       <DependentUpon>MyMessageBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="FlowLayoutPanel.cs">
+    <Compile Include="MyFlowLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MyPanel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MyTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MyTableLayoutPanel.Designer.cs">
+      <DependentUpon>MyTableLayoutPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

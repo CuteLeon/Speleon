@@ -77,6 +77,7 @@ namespace Speleon_Client
 
             if (isMine)
             {
+                this.Dock = DockStyle.Right;
                 ChatTimeLabel.TextAlign = ContentAlignment.MiddleRight;
                 HeadPortraitLabel.Dock = DockStyle.Right;
                 MessageContextLabel.Dock = DockStyle.Right;
@@ -85,6 +86,7 @@ namespace Speleon_Client
             }
             else
             {
+                this.Dock = DockStyle.Left;
                 MessageContextLabel.BackColor = Color.Pink;
                 HeadPortraitLabel.Padding = new Padding(0, 0, 8, 0);
             }

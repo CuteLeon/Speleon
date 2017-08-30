@@ -27,7 +27,7 @@ namespace Speleon_Client
         /// <summary>
         /// 与FriendItem关联的聊天气泡容器
         /// </summary>
-        public MyFlowLayoutPanel ChatBubblesPanel = null;
+        public MyTableLayoutPanel ChatBubblesPanel = null;
 
         /// <summary>
         /// 放置 FrinedItem 的流式布局容器
@@ -54,7 +54,6 @@ namespace Speleon_Client
                     value.NickNameLabel.ForeColor = Color.DeepSkyBlue;
                     value.BackColor = Color.LightGray;
                     value.Invalidate();
-
                 }
 
                 if (ActiveItemChanged != null)ActiveItemChanged(activeFriend??null,value??null);
