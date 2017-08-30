@@ -50,6 +50,7 @@
             this.MainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.MainPanel.Controls.Add(this.ChatSendPanel);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainPanel.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.MainPanel.Location = new System.Drawing.Point(230, 65);
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(490, 435);
@@ -78,8 +79,6 @@
             this.ChatInputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.ChatInputTextBox.Size = new System.Drawing.Size(370, 79);
             this.ChatInputTextBox.TabIndex = 14;
-            this.ChatInputTextBox.Text = "I am just a test message from  user-88888,now i am on my way to server.cant wait " +
-    "anymore.let\'s go.\r\njust do IT.\r\nPain past is pleasure.\r\nnow ... now ... now ...";
             // 
             // ChatSendButton
             // 

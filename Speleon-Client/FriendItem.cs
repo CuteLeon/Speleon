@@ -24,28 +24,6 @@ namespace Speleon_Client
         /// </summary>
         public static event EventHandler<FriendItem> ActiveItemChanged;
 
-        private string chatDraft=null;
-        /// <summary>
-        /// 聊天草稿，切换聊天好友时，记录输入的草稿
-        /// </summary>
-        public string ChatDraft {
-            get => chatDraft;
-            set
-            {
-                chatDraft = value;
-                if (!string.IsNullOrEmpty(value))
-                {
-                    SignatureLabel.ForeColor = Color.HotPink;
-                    SignatureLabel.Text = "草稿：" + chatDraft;
-                }
-                else
-                {
-                    SignatureLabel.ForeColor = Color.DimGray;
-                    SignatureLabel.Text = Signature;
-                }
-            }
-        }
-
         /// <summary>
         /// 与FriendItem关联的聊天气泡容器
         /// </summary>
@@ -143,6 +121,34 @@ namespace Speleon_Client
             {
                 signature = value;
                 if (string.IsNullOrEmpty(chatDraft)) SignatureLabel.Text = value;
+            }
+        }
+
+        private string chatDraft = null;
+        /// <summary>
+        /// 聊天草稿，切换聊天好友时，记录输入的草稿
+        /// </summary>
+        public string ChatDraft
+        {
+            get => chatDraft;
+            set
+            {
+                if (chatDraft != value)
+                {
+                    chatDraft = value;
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        SignatureLabel.ForeColor = Color.Tomato;
+                        SignatureLabel.Font = new Font(SignatureLabel.Font.FontFamily, 10, FontStyle.Regular);
+                        SignatureLabel.Text = "草稿：" + chatDraft;
+                    }
+                    else
+                    {
+                        SignatureLabel.ForeColor = Color.DimGray;
+                        SignatureLabel.Font = new Font(SignatureLabel.Font.FontFamily, 9, FontStyle.Regular);
+                        SignatureLabel.Text = Signature;
+                    }
+                }
             }
         }
 

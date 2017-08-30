@@ -226,7 +226,6 @@ namespace Speleon_Client
                 if (NewActiveItem.ChatBubblesPanel != null)
                 {
                     NewActiveItem.ChatBubblesPanel.Show();
-                    NewActiveItem.ChatBubblesPanel.Dock = DockStyle.Fill;
                     NewActiveItem.ChatBubblesPanel.BringToFront();
                 }
             }
@@ -376,7 +375,16 @@ namespace Speleon_Client
 
                                     this.Invoke(new Action(() =>
                                     {
-                                        new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：", ChatTime.ToString(), FromID), MyMessageBox.IconType.Info) {Text="MessageID = " + MessageID.ToString()}.Show(this);
+
+                                        FriendItem.GetFriendItemByFriendID(FromID)?.ChatBubblesPanel.Controls.Add(
+                                            new Label() {
+                                                AutoSize = false,
+                                                BorderStyle = BorderStyle.FixedSingle,
+                                                Dock= DockStyle.Top,
+                                                Text = string.Format("{0} 来自 [{1}] 的消息：\n{2}", ChatTime.ToString(), FromID, Message)
+                                            }
+                                        );
+                                        //new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：", ChatTime.ToString(), FromID), MyMessageBox.IconType.Info) {Text="MessageID = " + MessageID.ToString()}.Show(this);
                                     }));
                                     break;
                                 }
@@ -429,7 +437,11 @@ namespace Speleon_Client
 
                                             //创建好友聊天记录控件
                                             MyFlowLayoutPanel NewChatBubblePanel = new MyFlowLayoutPanel() {
-                                                AutoScroll=true,
+                                                AutoScroll = true,
+                                                Dock = DockStyle.Fill,
+                                                FlowDirection = FlowDirection.TopDown,
+                                                WrapContents = false,
+                                                Visible = false,
                                             };
                                             MainPanel.Controls.Add(NewChatBubblePanel);
 
@@ -549,6 +561,7 @@ namespace Speleon_Client
                 //连接失败时需要结束
             }
             if (FriendItem.ActiveFriend == null) return;
+            if (string.IsNullOrEmpty(ChatInputTextBox.Text)) return;
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 
