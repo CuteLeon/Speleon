@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace Speleon_Client
 {
+
+    //TODO:删除好友协议使用：移除方法：((IDisposable)sender).Dispose();
     public partial class FriendItem : UserControl, IDisposable
     {
         /// <summary>
@@ -20,7 +22,34 @@ namespace Speleon_Client
         /// <summary>
         /// 被激活的Item改变时发生
         /// </summary>
-        public static event EventHandler ActiveItemChanged;
+        public static event EventHandler<FriendItem> ActiveItemChanged;
+
+        private string chatDraft=null;
+        /// <summary>
+        /// 聊天草稿，切换聊天好友时，记录输入的草稿
+        /// </summary>
+        public string ChatDraft {
+            get => chatDraft;
+            set
+            {
+                chatDraft = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    SignatureLabel.ForeColor = Color.HotPink;
+                    SignatureLabel.Text = "草稿：" + chatDraft;
+                }
+                else
+                {
+                    SignatureLabel.ForeColor = Color.DimGray;
+                    SignatureLabel.Text = Signature;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 与FriendItem关联的聊天气泡容器
+        /// </summary>
+        public MyFlowLayoutPanel ChatBubblesPanel = null;
 
         /// <summary>
         /// 放置 FrinedItem 的流式布局容器
@@ -41,15 +70,16 @@ namespace Speleon_Client
                     activeFriend.BackColor = Color.WhiteSmoke;
                     activeFriend.Invalidate();
                 }
-                activeFriend = value;
                 if (value != null)
                 {
                     value.NickNameLabel.ForeColor = Color.DeepSkyBlue;
                     value.BackColor = Color.LightGray;
                     value.Invalidate();
 
-                    if (ActiveItemChanged != null)ActiveItemChanged(value,new EventArgs(){});
                 }
+
+                if (ActiveItemChanged != null)ActiveItemChanged(activeFriend??null,value??null);
+                activeFriend = value;
             }
         }
 
@@ -102,13 +132,18 @@ namespace Speleon_Client
             set => NickNameLabel.Text = value;
         }
 
+        private string signature = null;
         /// <summary>
         /// 读取或设置好友签名
         /// </summary>
         public string Signature
         {
-            get => SignatureLabel.Text;
-            set => SignatureLabel.Text = value;
+            get => signature;
+            set
+            {
+                signature = value;
+                if (string.IsNullOrEmpty(chatDraft)) SignatureLabel.Text = value;
+            }
         }
 
         /// <summary>
@@ -135,7 +170,7 @@ namespace Speleon_Client
                 _friendID = FriendID;
                 NickName = nickName;
                 Signature = signature;
-                FriendDictionary.Add(FriendID, this);
+                if(!FriendDictionary.ContainsKey(FriendID)) FriendDictionary.Add(FriendID, this);
                 OnLine = isOnLine;
 
                 MouseEnter += new System.EventHandler(Controls_MouseEnter);
@@ -178,6 +213,8 @@ namespace Speleon_Client
                         ActiveFriend = ParentPanel.Controls[Math.Min(ThisIndex, ParentPanel.Controls.Count - 1)] as FriendItem;
                     }
                 }
+                ChatBubblesPanel.Controls.Clear();
+                ChatBubblesPanel.Dispose();
             }
             catch (Exception ex)
             {

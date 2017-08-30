@@ -26,7 +26,7 @@ namespace Speleon_Client
          * 或在发送消息的协议最后加上"'\n''\0'"，而正则表达式也以"'\n''\0'"结束即可
          */
 
-        #region 变量和枚举
+    #region 变量和枚举
 
         /// <summary>
         /// 父登录窗体
@@ -58,9 +58,9 @@ namespace Speleon_Client
         /// </summary>
         Thread ReceiveThread = null;
 
-        #endregion
+    #endregion
 
-        #region 窗体事件
+    #region 窗体事件
 
         public ClientForm()
         {
@@ -98,8 +98,9 @@ namespace Speleon_Client
             CloseButton.MouseLeave += new EventHandler(delegate (object s, EventArgs ea) { CloseButton.Image = UnityResource.Close_0 as Image; });
             CloseButton.MouseDown += new MouseEventHandler(delegate (object s, MouseEventArgs mea) { CloseButton.Image = UnityResource.Close_2; });
 
-            //为 FriendItem 赋值 ParentPanel 属性
+            //为 FriendItem 赋值 ParentPanel 属性，并绑定事件
             FriendItem.ParentPanel = FriendsFlowPanel;
+            FriendItem.ActiveItemChanged += new EventHandler<FriendItem>(FriendItemActiveChanged);
 
             UnityModule.DebugPrint("窗体加载成功");
         }
@@ -169,9 +170,9 @@ namespace Speleon_Client
             }
         }
 
-        #endregion
+    #endregion
 
-        #region 标题栏按钮事件
+    #region 标题栏按钮事件
 
         private void CloseButton_Click(object sender, EventArgs e)
         {
@@ -201,9 +202,36 @@ namespace Speleon_Client
             this.WindowState = FormWindowState.Normal;
         }
 
-        #endregion
+    #endregion
 
-        #region 功能函数
+    #region 功能函数
+
+        /// <summary>
+        /// FriendItem激活项改变，切换聊天记录控件
+        /// </summary>
+        /// <param name="OldActiveItem"></param>
+        /// <param name="NewActiveItem"></param>
+        private void FriendItemActiveChanged(object OldActiveItem,FriendItem NewActiveItem)
+        {
+            if ((FriendItem)OldActiveItem != null)
+            {
+                UnityModule.DebugPrint("旧的激活项：{0}",((FriendItem)OldActiveItem).FriendID);
+                ((FriendItem)OldActiveItem).ChatDraft = ChatInputTextBox.Text;
+                ((FriendItem)OldActiveItem).ChatBubblesPanel?.Hide();
+            }
+            if ((FriendItem)NewActiveItem != null)
+            {
+                UnityModule.DebugPrint("新的激活项：{0}", ((FriendItem)NewActiveItem).FriendID);
+                ChatInputTextBox.Text = NewActiveItem.ChatDraft;
+                if (NewActiveItem.ChatBubblesPanel != null)
+                {
+                    NewActiveItem.ChatBubblesPanel.Show();
+                    NewActiveItem.ChatBubblesPanel.Dock = DockStyle.Fill;
+                    NewActiveItem.ChatBubblesPanel.BringToFront();
+                }
+            }
+        }
+
 
         /// <summary>
         /// 询问用户是否退出
@@ -383,7 +411,7 @@ namespace Speleon_Client
 
                                     this.Invoke(new Action(() =>
                                     {
-                                        UnityModule.DebugPrint("收到列表内好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
+                                        UnityModule.DebugPrint("收到好友信息：{1} ({0})：{2}", FriendID, NickName, Signature);
 
                                         if (FriendItem.FriendExisted(FriendID))
                                         {
@@ -392,11 +420,21 @@ namespace Speleon_Client
                                         }
                                         else
                                         {
-                                            //新添加 FriendItem！！！
-                                            FriendsFlowPanel.Controls.Add(new FriendItem(FriendID,NickName,Signature, OnLine));
                                             //默认好友聊天历史记录最早一条MessageID=0
                                             if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
-                                            //todo:创建好友聊天记录控件
+                                            //新添加 FriendItem
+                                            FriendItem NewFriendItem = new FriendItem(FriendID, NickName, Signature, OnLine);
+                                            NewFriendItem.RightToLeft = RightToLeft.No;
+                                            NewFriendItem.FriendItemClick += new EventHandler(FriendItemClick);
+
+                                            //创建好友聊天记录控件
+                                            MyFlowLayoutPanel NewChatBubblePanel = new MyFlowLayoutPanel() {
+                                                AutoScroll=true,
+                                            };
+                                            MainPanel.Controls.Add(NewChatBubblePanel);
+
+                                            NewFriendItem.ChatBubblesPanel = NewChatBubblePanel;
+                                            FriendsFlowPanel.Controls.Add(NewFriendItem);
                                         }
                                     }));
                                     break;
@@ -514,6 +552,10 @@ namespace Speleon_Client
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 
+        private void FriendItemClick(object sender,EventArgs e)
+        {
+            
+        }
 
     }
 }

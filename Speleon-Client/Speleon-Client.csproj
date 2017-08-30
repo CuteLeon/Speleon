@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatBubble.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ChatBubble.Designer.cs">
+      <DependentUpon>ChatBubble.cs</DependentUpon>
+    </Compile>
     <Compile Include="ClientForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CloseTips_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpeleonBGI.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

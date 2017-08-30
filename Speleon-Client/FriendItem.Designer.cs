@@ -54,7 +54,7 @@
             this.SignatureLabel.Location = new System.Drawing.Point(54, 30);
             this.SignatureLabel.Margin = new System.Windows.Forms.Padding(0);
             this.SignatureLabel.Name = "SignatureLabel";
-            this.SignatureLabel.Size = new System.Drawing.Size(170, 24);
+            this.SignatureLabel.Size = new System.Drawing.Size(152, 24);
             this.SignatureLabel.TabIndex = 2;
             this.SignatureLabel.Text = "Signature";
             this.SignatureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -67,7 +67,7 @@
             this.NickNameLabel.Location = new System.Drawing.Point(54, 6);
             this.NickNameLabel.Margin = new System.Windows.Forms.Padding(0);
             this.NickNameLabel.Name = "NickNameLabel";
-            this.NickNameLabel.Size = new System.Drawing.Size(170, 24);
+            this.NickNameLabel.Size = new System.Drawing.Size(152, 24);
             this.NickNameLabel.TabIndex = 4;
             this.NickNameLabel.Text = "NickeName";
             this.NickNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -83,7 +83,7 @@
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "FriendItem";
             this.Padding = new System.Windows.Forms.Padding(6);
-            this.Size = new System.Drawing.Size(230, 60);
+            this.Size = new System.Drawing.Size(212, 60);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FriendItem_Paint);
             this.ResumeLayout(false);
 
