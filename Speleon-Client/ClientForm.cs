@@ -375,15 +375,32 @@ namespace Speleon_Client
 
                                     this.Invoke(new Action(() =>
                                     {
-
-                                        FriendItem.GetFriendItemByFriendID(FromID)?.ChatBubblesPanel.Controls.Add(
-                                            new Label() {
-                                                AutoSize = false,
-                                                BorderStyle = BorderStyle.FixedSingle,
-                                                Dock= DockStyle.Top,
-                                                Text = string.Format("{0} 来自 [{1}] 的消息：\n{2}", ChatTime.ToString(), FromID, Message)
+                                        FriendItem MessageFrom = FriendItem.GetFriendItemByFriendID(FromID);
+                                        if (MessageFrom != null)
+                                        {
+                                            //TODO:小红点显示该好友未读消息
+                                            if (FriendItem.ActiveFriend == null)
+                                            {
+                                                FriendsFlowPanel.Controls.SetChildIndex(MessageFrom, 0);
                                             }
-                                        );
+                                            else
+                                            {
+                                                if (MessageFrom != FriendItem.ActiveFriend)
+                                                    FriendsFlowPanel.Controls.SetChildIndex(MessageFrom,1);
+                                                else
+                                                    FriendsFlowPanel.Controls.SetChildIndex(MessageFrom, 0);
+                                            }
+
+                                            MessageFrom.ChatBubblesPanel.Controls.Add(
+                                                new Label()
+                                                {
+                                                    AutoSize = false,
+                                                    BorderStyle = BorderStyle.FixedSingle,
+                                                    Text = string.Format("{0} 来自 [{1}] 的消息：\n{2}", ChatTime.ToString(), FromID, Message)
+                                                }
+                                            );
+                                        }
+
                                         //new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：", ChatTime.ToString(), FromID), MyMessageBox.IconType.Info) {Text="MessageID = " + MessageID.ToString()}.Show(this);
                                     }));
                                     break;
@@ -562,6 +579,7 @@ namespace Speleon_Client
             }
             if (FriendItem.ActiveFriend == null) return;
             if (string.IsNullOrEmpty(ChatInputTextBox.Text)) return;
+            FriendsFlowPanel.Controls.SetChildIndex(FriendItem.ActiveFriend,0);
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 

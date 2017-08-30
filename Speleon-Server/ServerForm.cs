@@ -442,10 +442,10 @@ namespace Speleon_Server
         {
             string TargetUserID = "88888";
             ProtocolFormatter.CMDType ProtocolType = ProtocolFormatter.CMDType.GetFriendsList;
-            string[] DebugInfo = new string[] {"00000", "123", new Random().Next(1000).ToString(),true.ToString().ToUpper()};
+            string[] DebugInfo = new string[] { new Random().Next(100000).ToString(), "123", new Random().Next(1000).ToString(),true.ToString().ToUpper()};
 
             if(SocketsDictionary.ContainsKey(TargetUserID))
-                SocketsDictionary["88888"].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolType,DebugInfo)));
+                SocketsDictionary[TargetUserID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolType, DebugInfo)));
         }
     }
 }
