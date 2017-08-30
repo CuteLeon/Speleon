@@ -28,22 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.HeadPortraitLabel = new System.Windows.Forms.Label();
             this.SignatureLabel = new System.Windows.Forms.Label();
             this.NickNameLabel = new System.Windows.Forms.Label();
+            this.HeadPortraitLabel = new System.Windows.Forms.Label();
+            this.MessageNRTCountLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // HeadPortraitLabel
-            // 
-            this.HeadPortraitLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.HeadPortraitLabel.Image = global::Speleon_Client.UnityResource.DefaultHeadProtrait;
-            this.HeadPortraitLabel.Location = new System.Drawing.Point(6, 6);
-            this.HeadPortraitLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.HeadPortraitLabel.MaximumSize = new System.Drawing.Size(48, 48);
-            this.HeadPortraitLabel.MinimumSize = new System.Drawing.Size(48, 48);
-            this.HeadPortraitLabel.Name = "HeadPortraitLabel";
-            this.HeadPortraitLabel.Size = new System.Drawing.Size(48, 48);
-            this.HeadPortraitLabel.TabIndex = 0;
             // 
             // SignatureLabel
             // 
@@ -71,10 +60,39 @@
             this.NickNameLabel.Text = "NickeName";
             this.NickNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // HeadPortraitLabel
+            // 
+            this.HeadPortraitLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.HeadPortraitLabel.Image = global::Speleon_Client.UnityResource.DefaultHeadProtrait;
+            this.HeadPortraitLabel.Location = new System.Drawing.Point(6, 6);
+            this.HeadPortraitLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.HeadPortraitLabel.MaximumSize = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.MinimumSize = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.Name = "HeadPortraitLabel";
+            this.HeadPortraitLabel.Size = new System.Drawing.Size(48, 48);
+            this.HeadPortraitLabel.TabIndex = 0;
+            // 
+            // MessageNRTCountLabel
+            // 
+            this.MessageNRTCountLabel.AutoSize = true;
+            this.MessageNRTCountLabel.BackColor = System.Drawing.Color.Red;
+            this.MessageNRTCountLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.MessageNRTCountLabel.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.MessageNRTCountLabel.ForeColor = System.Drawing.Color.White;
+            this.MessageNRTCountLabel.Location = new System.Drawing.Point(186, 6);
+            this.MessageNRTCountLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MessageNRTCountLabel.MinimumSize = new System.Drawing.Size(20, 20);
+            this.MessageNRTCountLabel.Name = "MessageNRTCountLabel";
+            this.MessageNRTCountLabel.Size = new System.Drawing.Size(20, 20);
+            this.MessageNRTCountLabel.TabIndex = 5;
+            this.MessageNRTCountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MessageNRTCountLabel.Visible = false;
+            // 
             // FriendItem
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.Controls.Add(this.MessageNRTCountLabel);
             this.Controls.Add(this.NickNameLabel);
             this.Controls.Add(this.SignatureLabel);
             this.Controls.Add(this.HeadPortraitLabel);
@@ -85,6 +103,7 @@
             this.Size = new System.Drawing.Size(212, 60);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FriendItem_Paint);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -93,5 +112,6 @@
         private System.Windows.Forms.Label HeadPortraitLabel;
         private System.Windows.Forms.Label SignatureLabel;
         private System.Windows.Forms.Label NickNameLabel;
+        private System.Windows.Forms.Label MessageNRTCountLabel;
     }
 }

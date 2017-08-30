@@ -381,7 +381,8 @@ namespace Speleon_Client
                                         if (MessageFrom != null)
                                         {
                                             FriendsFlowPanel.Controls.SetChildIndex(MessageFrom, 0);
-                                            //TODO:小红点显示该好友未读消息
+
+                                            if (FriendItem.ActiveFriend != MessageFrom) MessageFrom.MessageNRTCount += 1;
 
                                             MessageFrom.ChatBubblesPanel.Controls.Add(
                                                 new ChatBubble

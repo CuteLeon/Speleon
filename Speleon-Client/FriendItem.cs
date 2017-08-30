@@ -50,6 +50,7 @@ namespace Speleon_Client
                 }
                 if (value != null)
                 {
+                    value.MessageNRTCount = 0;
                     value.NickNameLabel.ForeColor = Color.DeepSkyBlue;
                     value.BackColor = Color.LightGray;
                     value.Invalidate();
@@ -162,6 +163,28 @@ namespace Speleon_Client
                         SignatureLabel.Font = new Font(SignatureLabel.Font.FontFamily, 9, FontStyle.Regular);
                         SignatureLabel.Text = Signature;
                     }
+                }
+            }
+        }
+
+        private int messageNRTCount = 0;
+        /// <summary>
+        /// 未读消息个数
+        /// </summary>
+        public int MessageNRTCount
+        {
+            get => messageNRTCount;
+            set
+            {
+                messageNRTCount = value;
+                if (value == 0)
+                {
+                    if (MessageNRTCountLabel.Visible) MessageNRTCountLabel.Hide();
+                }
+                else
+                {
+                    if (!MessageNRTCountLabel.Visible) MessageNRTCountLabel.Show();
+                    MessageNRTCountLabel.Text = value.ToString();
                 }
             }
         }
