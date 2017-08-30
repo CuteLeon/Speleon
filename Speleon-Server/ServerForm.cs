@@ -441,8 +441,8 @@ namespace Speleon_Server
         private void TestButton_Click(object sender, EventArgs e)
         {
             string TargetUserID = "88888";
-            ProtocolFormatter.CMDType ProtocolType = ProtocolFormatter.CMDType.GetFriendsList;
-            string[] DebugInfo = new string[] { new Random().Next(100000).ToString(), "123", new Random().Next(1000).ToString(),true.ToString().ToUpper()};
+            ProtocolFormatter.CMDType ProtocolType = ProtocolFormatter.CMDType.ChatMessage;
+            string[] DebugInfo = new string[] {"66666", DateTime.Now.ToString(), "1",Convert.ToBase64String(Encoding.UTF8.GetBytes("Test message"))};
 
             if(SocketsDictionary.ContainsKey(TargetUserID))
                 SocketsDictionary[TargetUserID].Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolType, DebugInfo)));

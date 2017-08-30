@@ -99,6 +99,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>UnityResource.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ChatBubble.resx">
+      <DependentUpon>ChatBubble.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ClientForm.resx">
       <DependentUpon>ClientForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -235,6 +238,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SpeleonBGI.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultHeadProtrait.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -384,16 +384,17 @@ namespace Speleon_Client
                                             //TODO:小红点显示该好友未读消息
 
                                             MessageFrom.ChatBubblesPanel.Controls.Add(
-                                                new Label()
-                                                {
-                                                    AutoSize = false,
-                                                    BorderStyle = BorderStyle.FixedSingle,
-                                                    Text = string.Format("{0} 来自 [{1}] 的消息：\n{2}", ChatTime.ToString(), FromID, Message)
-                                                }
+                                                new ChatBubble
+                                                (
+                                                    MessageID.ToString(),
+                                                    ChatTime.ToString(),
+                                                    FromID,
+                                                    Message,
+                                                    MessageFrom.ChatBubblesPanel.Width,
+                                                    false
+                                                )
                                             );
                                         }
-
-                                        //new MyMessageBox(Message, string.Format("{0} 来自 [{1}] 的消息：", ChatTime.ToString(), FromID), MyMessageBox.IconType.Info) {Text="MessageID = " + MessageID.ToString()}.Show(this);
                                     }));
                                     break;
                                 }
@@ -450,8 +451,13 @@ namespace Speleon_Client
                                                 Dock = DockStyle.Fill,
                                                 FlowDirection = FlowDirection.TopDown,
                                                 WrapContents = false,
+                                                BackColor = Color.White,
                                                 Visible = false,
                                             };
+
+                                            //绑定自动滚动到底部事件
+                                            NewChatBubblePanel.ControlAdded += new ControlEventHandler(ChatBubblesPanel_ControlAdded);
+
                                             MainPanel.Controls.Add(NewChatBubblePanel);
 
                                             NewFriendItem.ChatBubblesPanel = NewChatBubblePanel;
@@ -586,13 +592,31 @@ namespace Speleon_Client
             if (FriendItem.ActiveFriend == null) return;
             if (string.IsNullOrEmpty(ChatInputTextBox.Text)) return;
             FriendsFlowPanel.Controls.SetChildIndex(FriendItem.ActiveFriend,0);
+
+            FriendItem.ActiveFriend.ChatBubblesPanel.Controls.Add(
+                new ChatBubble
+                (
+                    "0",
+                    DateTime.Now.ToString(),
+                    UnityModule.USERID,
+                    ChatInputTextBox.Text,
+                    FriendItem.ActiveFriend.ChatBubblesPanel.Width,
+                    true
+            ));
+
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
         }
 
+        
         private void FriendItemClick(object sender,EventArgs e)
         {
             
         }
 
+        private void ChatBubblesPanel_ControlAdded(object sender, ControlEventArgs e)
+        {
+            ((MyFlowLayoutPanel)sender).VerticalScroll.Value = ((MyFlowLayoutPanel)sender).VerticalScroll.Maximum;
+            //((MyFlowLayoutPanel)sender).AutoScrollPosition = new Point(0, ((MyFlowLayoutPanel)sender).Height);
+        }
     }
 }

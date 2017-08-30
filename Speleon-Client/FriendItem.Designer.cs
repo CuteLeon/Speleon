@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FriendItem));
             this.HeadPortraitLabel = new System.Windows.Forms.Label();
             this.SignatureLabel = new System.Windows.Forms.Label();
             this.NickNameLabel = new System.Windows.Forms.Label();
@@ -37,7 +36,7 @@
             // HeadPortraitLabel
             // 
             this.HeadPortraitLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.HeadPortraitLabel.Image = ((System.Drawing.Image)(resources.GetObject("HeadPortraitLabel.Image")));
+            this.HeadPortraitLabel.Image = global::Speleon_Client.UnityResource.DefaultHeadProtrait;
             this.HeadPortraitLabel.Location = new System.Drawing.Point(6, 6);
             this.HeadPortraitLabel.Margin = new System.Windows.Forms.Padding(0);
             this.HeadPortraitLabel.MaximumSize = new System.Drawing.Size(48, 48);
