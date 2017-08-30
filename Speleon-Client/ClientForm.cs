@@ -391,7 +391,7 @@ namespace Speleon_Client
                                                     ChatTime.ToString(),
                                                     FromID,
                                                     Message,
-                                                    MessageFrom.ChatBubblesPanel.Width,
+                                                    MainPanel.Width,
                                                     false
                                                 )
                                             );
@@ -601,7 +601,7 @@ namespace Speleon_Client
                     DateTime.Now.ToString(),
                     UnityModule.USERID,
                     ChatInputTextBox.Text,
-                    FriendItem.ActiveFriend.ChatBubblesPanel.Width,
+                    MainPanel.Width,
                     true
             ));
 

@@ -40,7 +40,6 @@ namespace Speleon_Client
             {
                 this.MaximumSize = new Size(value, MaximumSize.Height);
                 MessageContextLabel.MaximumSize =new Size( value-HeadPortraitLabel.Width-this.Padding.Left-this.Padding.Right,MessageContextLabel.MaximumSize.Height);
-                System.Diagnostics.Debug.Print(this.MaximumSize.ToString() + "\n" + MessageContextLabel.MaximumSize.ToString());
             }
         }
 
