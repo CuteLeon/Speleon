@@ -69,6 +69,9 @@ namespace Speleon_Client
         {
             get => onLine;
             set{
+                //todo:记录在线好有个数
+                if (onLine != value) OnLineCount += value ? 1 : -1;
+                System.Diagnostics.Debug.Print("当前在线好友："+ OnLineCount.ToString());
                 onLine = value;
                 if (value)
                 {
@@ -161,6 +164,11 @@ namespace Speleon_Client
         }
 
         /// <summary>
+        /// 记录当前在线好友的个数
+        /// </summary>
+        public int OnLineCount=0;
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="FriendID">好友ID</param>
@@ -178,7 +186,7 @@ namespace Speleon_Client
                 Signature = signature;
                 if(!FriendDictionary.ContainsKey(FriendID)) FriendDictionary.Add(FriendID, this);
                 OnLine = isOnLine;
-
+                
                 MouseEnter += new System.EventHandler(Controls_MouseEnter);
                 MouseLeave += new System.EventHandler(Controls_MouseLeave);
                 Click += new System.EventHandler(FriendItem_Click);
@@ -321,6 +329,15 @@ namespace Speleon_Client
         {
             if (activeFriend != this) ActiveFriend = this;
             if (FriendItemClick != null) FriendItemClick(this, e);
+        }
+
+        /// <summary>
+        /// 重置静态数据
+        /// </summary>
+        public static void ResetStaticData()
+        {
+            activeFriend?.Dispose();
+            FriendDictionary = new Dictionary<string, FriendItem>();
         }
 
     }

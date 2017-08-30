@@ -273,6 +273,8 @@ namespace Speleon_Client
                 else if (hideTo == HideTo.JusetClose)
                 {
                     UnityModule.DebugPrint("关闭ClientForm");
+                    //初始化FriendItem静态数据，否则再次登录后会出现问题
+                    FriendItem.ResetStaticData();
                     AllowToClose = true;
                     this.Close();
                 }
