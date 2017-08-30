@@ -33,7 +33,10 @@ namespace Speleon_Client
         /// </summary>
         public readonly string MessageContext;
 
-        private int MaxWidth
+        /// <summary>
+        /// 自适应最宽宽度
+        /// </summary>
+        public int MaxWidth
         {
             get => this.MaximumSize.Width;
             set

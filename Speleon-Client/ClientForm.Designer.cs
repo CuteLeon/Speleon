@@ -55,6 +55,7 @@
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(490, 435);
             this.MainPanel.TabIndex = 16;
+            this.MainPanel.Resize += new System.EventHandler(this.MainPanel_Resize);
             // 
             // ChatSendPanel
             // 
@@ -66,6 +67,7 @@
             this.ChatSendPanel.Name = "ChatSendPanel";
             this.ChatSendPanel.Size = new System.Drawing.Size(490, 79);
             this.ChatSendPanel.TabIndex = 15;
+            this.ChatSendPanel.Visible = false;
             // 
             // ChatInputTextBox
             // 

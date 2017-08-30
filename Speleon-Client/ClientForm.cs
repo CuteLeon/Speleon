@@ -58,9 +58,14 @@ namespace Speleon_Client
         /// </summary>
         Thread ReceiveThread = null;
 
+        /// <summary>
+        /// 聊天气泡自适应的最宽宽度
+        /// </summary>
+        private int BubbleMaxWidth = 0;
+
     #endregion
 
-    #region 窗体事件
+        #region 窗体事件
 
         public ClientForm()
         {
@@ -101,6 +106,8 @@ namespace Speleon_Client
             //为 FriendItem 赋值 ParentPanel 属性，并绑定事件
             FriendItem.ParentPanel = FriendsFlowPanel;
             FriendItem.ActiveItemChanged += new EventHandler<FriendItem>(FriendItemActiveChanged);
+
+            BubbleMaxWidth = MainPanel.Width - 60;
 
             UnityModule.DebugPrint("窗体加载成功");
         }
@@ -222,12 +229,18 @@ namespace Speleon_Client
             if ((FriendItem)NewActiveItem != null)
             {
                 UnityModule.DebugPrint("新的激活项：{0}", ((FriendItem)NewActiveItem).FriendID);
+                if (!ChatSendPanel.Visible) ChatSendPanel.Show();
+
                 ChatInputTextBox.Text = NewActiveItem.ChatDraft;
                 if (NewActiveItem.ChatBubblesPanel != null)
                 {
                     NewActiveItem.ChatBubblesPanel.Show();
                     NewActiveItem.ChatBubblesPanel.BringToFront();
                 }
+            }
+            else
+            {
+                ChatSendPanel.Hide();
             }
         }
 
@@ -391,7 +404,7 @@ namespace Speleon_Client
                                                     ChatTime.ToString(),
                                                     FromID,
                                                     Message,
-                                                    MainPanel.Width - 60,
+                                                    BubbleMaxWidth,
                                                     false
                                                 )
                                             );
@@ -601,11 +614,13 @@ namespace Speleon_Client
                     DateTime.Now.ToString(),
                     UnityModule.USERID,
                     ChatInputTextBox.Text,
-                    MainPanel.Width - 60,
+                    BubbleMaxWidth,
                     true
             ));
 
             UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.ChatMessage,Application.ProductVersion,FriendItem.ActiveFriend.FriendID,ChatInputTextBox.Text)));
+
+            ChatInputTextBox.Text = "";
         }
 
         
@@ -616,9 +631,29 @@ namespace Speleon_Client
 
         private void ChatBubblesPanel_ControlAdded(object sender, ControlEventArgs e)
         {
-            //todo:聊天气泡容器需要自动滚动到底部
-            //((MyFlowLayoutPanel)sender).VerticalScroll.Value = ((MyFlowLayoutPanel)sender).VerticalScroll.Maximum;
-            //((MyFlowLayoutPanel)sender).AutoScrollPosition = new Point(0, ((MyFlowLayoutPanel)sender).Height);
+            ((MyTableLayoutPanel)sender).VerticalScroll.Value = ((MyTableLayoutPanel)sender).VerticalScroll.Maximum;
+        }
+
+        
+        private void MainPanel_Resize(object sender, EventArgs e)
+        {
+            if (BubbleMaxWidth + 60 == MainPanel.Width) return;
+
+            BubbleMaxWidth = MainPanel.Width - 60;
+            foreach (FriendItem friendItem in FriendsFlowPanel.Controls)
+            {
+                if (friendItem is FriendItem)
+                {
+                    foreach (ChatBubble chatBubble in friendItem.ChatBubblesPanel.Controls)
+                    {
+                        if (chatBubble is ChatBubble)
+                        {
+                            chatBubble.MaxWidth = BubbleMaxWidth;
+                        }
+                    }
+                }
+            }
+            System.Diagnostics.Debug.Print(BubbleMaxWidth.ToString());
         }
     }
 }
