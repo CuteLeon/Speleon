@@ -76,7 +76,7 @@ namespace Speleon_Client
 
             ChatTimeLabel.Text = chatTime;
             MessageContextLabel.Text = messageContext;
-
+            
             if (isMine)
             {
                 this.Dock = DockStyle.Right;

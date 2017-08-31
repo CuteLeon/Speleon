@@ -330,7 +330,8 @@ namespace Speleon_Client
         {
             while (true)
             {
-                byte[] MessageBuffer = new byte[]{};
+                #region 接收消息
+                byte[] MessageBuffer = new byte[] { };
                 int MessageBufferSize = 0;
                 string ServerMessagePackage = "";
 
@@ -351,6 +352,7 @@ namespace Speleon_Client
                 }
 
                 UnityModule.DebugPrint("ServerMessagePackage : {0}", ServerMessagePackage);
+                #endregion
 
                 /*
                  * 遇到严重的TCP粘包问题，服务端分多次发送的GETFRIENDSLIST协议，被一次发送给了客户端
@@ -359,12 +361,13 @@ namespace Speleon_Client
                  * 以上，解决粘包问题
                  */
                 string[] ServerMessages = ServerMessagePackage.Split('\n');
-                foreach(string TempServerMessage in ServerMessages)
+                foreach (string TempServerMessage in ServerMessages)
                 {
                     try
                     {
                         if (string.IsNullOrEmpty(TempServerMessage)) continue;
 
+                        #region 读取消息协议类型
                         string ServerMessage = TempServerMessage + '\n';
                         UnityModule.DebugPrint("ServerMessage : {0}", ServerMessage);
                         string MessagePattern = ProtocolFormatter.GetCMDTypePattern();
@@ -372,21 +375,23 @@ namespace Speleon_Client
                         Match MessageMatchResult = MessageRegex.Match(ServerMessage);
                         string cmdType = MessageMatchResult.Groups["CMDTYPE"].Value.ToUpper();
                         UnityModule.DebugPrint("收到 CMDTYPE : {0}", cmdType);
+                        #endregion
 
                         switch (cmdType)
                         {
                             case "CHATMESSAGE":
                                 {
-                                    string FromID=null,Message = null;
+                                    #region 聊天消息
+                                    string FromID = null, Message = null;
                                     int MessageID;
                                     DateTime ChatTime;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.ChatMessage);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
                                     FromID = MessageMatchResult.Groups["FROMID"].Value;
-                                    ChatTime = DateTime.TryParse(MessageMatchResult.Groups["CHATTIME"].Value.ToString(),out ChatTime) ? ChatTime.ToLocalTime():DateTime.Now;
+                                    ChatTime = DateTime.TryParse(MessageMatchResult.Groups["CHATTIME"].Value.ToString(), out ChatTime) ? ChatTime.ToLocalTime() : DateTime.Now;
                                     MessageID = int.Parse(MessageMatchResult.Groups["MESSAGEID"].Value);
-                                    Message =Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value));
+                                    Message = Encoding.UTF8.GetString(Convert.FromBase64String(MessageMatchResult.Groups["MESSAGE"].Value));
 
                                     this.Invoke(new Action(() =>
                                     {
@@ -411,9 +416,11 @@ namespace Speleon_Client
                                         }
                                     }));
                                     break;
+                                    #endregion
                                 }
                             case "GETCHATHISTORY":
                                 {
+                                    #region 获取历史聊天记录
                                     //todo:显示历史聊天记录
                                     string FromID = "";
                                     int MessageID = 0;
@@ -429,10 +436,12 @@ namespace Speleon_Client
                                         FriendsFirstMessageID.Add(FromID, MessageID);
                                     }
                                     break;
+                                    #endregion
                                 }
                             case "GETFRIENDSLIST":
                                 {
-                                    string FriendID = null, NickName = null,Signature=null;bool OnLine=false;
+                                    #region 获取好友列表
+                                    string FriendID = null, NickName = null, Signature = null; bool OnLine = false;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.GetFriendsList);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                                     MessageMatchResult = MessageRegex.Match(ServerMessage);
@@ -448,12 +457,12 @@ namespace Speleon_Client
                                         if (FriendItem.FriendExisted(FriendID))
                                         {
                                             //TODO:如果 FriendID已经存在，且FriendItem不为null，仅更新FriendID的信息，此特性可以在服务端用于有用户更新了资料时，立即向好友客户端更新资料
-                                            FriendItem.GetFriendItemByFriendID(FriendID)?.SetNickNameSignatureAndOnLine(NickName,Signature,OnLine);
+                                            FriendItem.GetFriendItemByFriendID(FriendID)?.SetNickNameSignatureAndOnLine(NickName, Signature, OnLine);
                                         }
                                         else
                                         {
                                             //默认好友聊天历史记录最早一条MessageID=0
-                                            if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID,0);
+                                            if (!FriendsFirstMessageID.ContainsKey(FriendID)) FriendsFirstMessageID.Add(FriendID, 0);
                                             //新添加 FriendItem
                                             FriendItem NewFriendItem = new FriendItem(FriendID, NickName, Signature, OnLine)
                                             {
@@ -462,7 +471,8 @@ namespace Speleon_Client
                                             NewFriendItem.FriendItemClick += new EventHandler(FriendItemClick);
 
                                             //创建好友聊天记录控件
-                                            MyTableLayoutPanel NewChatBubblePanel = new MyTableLayoutPanel() {
+                                            MyTableLayoutPanel NewChatBubblePanel = new MyTableLayoutPanel()
+                                            {
                                                 AutoScroll = true,
                                                 Dock = DockStyle.Fill,
                                                 BackColor = Color.White,
@@ -479,9 +489,11 @@ namespace Speleon_Client
                                         }
                                     }));
                                     break;
+                                    #endregion
                                 }
                             case "FRIENDSIGNIN":
                                 {
+                                    #region 好友登录
                                     string FriendID = null;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.FriendSignIn);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -496,16 +508,18 @@ namespace Speleon_Client
                                             FriendItem JustSignIn = FriendItem.GetFriendItemByFriendID(FriendID);
                                             if (JustSignIn != null)
                                             {
-                                                FriendsFlowPanel.Controls.SetChildIndex(JustSignIn,FriendItem.OnLineCount);
+                                                FriendsFlowPanel.Controls.SetChildIndex(JustSignIn, FriendItem.OnLineCount);
                                                 JustSignIn.OnLine = true;
                                             }
                                         }
                                     }));
 
                                     break;
+                                    #endregion
                                 }
                             case "FRIENDSIGNOUT":
                                 {
+                                    #region 好友注销登录
                                     string FriendID = null;
                                     MessagePattern = ProtocolFormatter.GetProtocolPattern(ProtocolFormatter.CMDType.FriendSignOut);
                                     MessageRegex = new Regex(MessagePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -525,23 +539,27 @@ namespace Speleon_Client
                                             }
                                         }
                                     }));
-
                                     break;
+                                    #endregion
                                 }
                             case "FRIENDSLISTCOMPLETE":
                                 {
-                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol( ProtocolFormatter.CMDType.GetMessageNotSendYet,Application.ProductVersion,UnityModule.USERID)));
+                                    #region 好友列表获取完毕
+                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetMessageNotSendYet, Application.ProductVersion, UnityModule.USERID)));
                                     break;
+                                    #endregion
                                 }
                             case "MESSAGENSYCOMPLETE":
                                 {
+                                    #region 未读消息获取完毕
                                     //准备完毕，测试用
-                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetChatHistory,Application.ProductVersion,"66666","0")));
-
+                                    UnitySocket.Send(Encoding.UTF8.GetBytes(ProtocolFormatter.FormatProtocol(ProtocolFormatter.CMDType.GetChatHistory, Application.ProductVersion, "66666", "0")));
                                     break;
+                                    #endregion
                                 }
                             case "ANOTHORSIGNIN":
                                 {
+                                    #region 异地登录
                                     this.Invoke(new Action(() =>
                                     {
                                         HideMe(HideTo.JusetClose);
@@ -550,13 +568,14 @@ namespace Speleon_Client
                                         UnitySocket.Close();
                                         ReceiveThread.Abort();
                                     }));
-
                                     //这里需要 return; 否则会进入 catch(){} 被当做异常处理
                                     return;
+                                    #endregion
                                 }
                             case "SERVERSHUTDOWN":
                                 {
-                                    this.Invoke(new Action(()=> {
+                                    #region 远程服务端关闭
+                                    this.Invoke(new Action(() => {
                                         HideMe(HideTo.JusetClose);
                                         this.loginForm.Show();
                                         this.loginForm.ShowTips("远程服务器主动关闭，可能Leon关机去上课了...");
@@ -564,14 +583,17 @@ namespace Speleon_Client
                                         ReceiveThread.Abort();
                                     }));
                                     return;
+                                    #endregion
                                 }
                             default:
                                 {
+                                    #region 未知的消息协议
                                     this.Invoke(new Action(() =>
                                     {
                                         new MyMessageBox("遇到未知的 CMDTYPE : " + cmdType, MyMessageBox.IconType.Info).Show(this);
                                     }));
                                     break;
+                                    #endregion
                                 }
                         }
 
@@ -654,6 +676,22 @@ namespace Speleon_Client
                 }
             }
             System.Diagnostics.Debug.Print(BubbleMaxWidth.ToString());
+        }
+
+        private void ChatInputTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+        }
+
+        private void ChatInputTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                if (!e.Control)
+                {
+                    ChatSendButton_Click(null, null);
+                }
+            }
         }
     }
 }

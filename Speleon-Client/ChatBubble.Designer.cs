@@ -81,6 +81,7 @@
             this.Controls.Add(this.MessageContextLabel);
             this.Controls.Add(this.ChatTimeLabel);
             this.Controls.Add(this.HeadPortraitLabel);
+            this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MinimumSize = new System.Drawing.Size(200, 58);
             this.Name = "ChatBubble";

@@ -81,6 +81,8 @@
             this.ChatInputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.ChatInputTextBox.Size = new System.Drawing.Size(370, 79);
             this.ChatInputTextBox.TabIndex = 14;
+            this.ChatInputTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ChatInputTextBox_KeyDown);
+            this.ChatInputTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ChatInputTextBox_KeyUp);
             // 
             // ChatSendButton
             // 
