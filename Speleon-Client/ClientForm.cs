@@ -693,5 +693,78 @@ namespace Speleon_Client
                 }
             }
         }
+
+        protected override void WndProc(ref Message Msg)
+        {
+            switch (Msg.Msg)
+            {
+                //鼠标拖动改变大小
+                case UnityModule.WM_NCHITTEST:
+                    {
+                        // 获取鼠标位置
+                        int nPosX = (Msg.LParam.ToInt32() & 65535);
+                        int nPosY = (Msg.LParam.ToInt32() >> 16);
+
+                        if (nPosX >= this.Right-6 && nPosY >= this.Bottom-6)
+                        {
+                            //右下角
+                            Msg.Result = new IntPtr(UnityModule.HT_BOTTOMRIGHT);
+                        }
+                        else if (nPosX <= this.Left + 6 && nPosY <= this.Top + 6)
+                        {
+                            //左上角
+                            Msg.Result = new IntPtr(UnityModule.HT_TOPLEFT);
+                        }
+                        else if (nPosX <= this.Left + 6 && nPosY >= this.Bottom - 6)
+                        {
+                            //左下角
+                            Msg.Result = new IntPtr(UnityModule.HT_BOTTOMLEFT);
+                        }
+                        else if (nPosX >= this.Right - 6 && nPosY <= this.Top + 6)
+                        {
+                            //右上角
+                            Msg.Result = new IntPtr(UnityModule.HT_TOPRIGHT);
+                        }
+                        else if (nPosX >= this.Right - 2)
+                        {
+                            //右边框
+                            Msg.Result = new IntPtr(UnityModule.HT_RIGHT);
+                        }
+                        else if (nPosY >= this.Bottom - 2)
+                        {
+                            //底边框
+                            Msg.Result = new IntPtr(UnityModule.HT_BOTTOM);
+                        }
+                        else if (nPosX <= this.Left + 2)
+                        {
+                            //左边框
+                            Msg.Result = new IntPtr(UnityModule.HT_LEFT);
+                        }
+                        else if (nPosY <= this.Top + 2)
+                        {
+                            //上边框
+                            Msg.Result = new IntPtr(UnityModule.HT_TOP);
+                        }
+                        else if (nPosY <= this.Left + 20)
+                        {
+                            //上方 2~20 像素作为标题栏拖动
+                            Msg.Result = new IntPtr(UnityModule.HT_CAPTION);
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        base.WndProc(ref Msg);
+                        break;
+                    }
+            }
+        }
+
+        private void ClientForm_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.FillRectangle(Brushes.Gainsboro,0,0,this.Width, TitlePanel.Height + 5);
+            e.Graphics.FillRectangle(Brushes.WhiteSmoke, 0, FriendsFlowPanel.Top, 5, FriendsFlowPanel.Height + 5);
+            e.Graphics.FillRectangle(Brushes.WhiteSmoke, 0, FriendsFlowPanel.Bottom, FriendsFlowPanel.Width+5, 5);
+        }
     }
 }

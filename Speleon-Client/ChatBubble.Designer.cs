@@ -42,6 +42,7 @@
             this.HeadPortraitLabel.MaximumSize = new System.Drawing.Size(56, 48);
             this.HeadPortraitLabel.MinimumSize = new System.Drawing.Size(56, 48);
             this.HeadPortraitLabel.Name = "HeadPortraitLabel";
+            this.HeadPortraitLabel.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.HeadPortraitLabel.Size = new System.Drawing.Size(56, 48);
             this.HeadPortraitLabel.TabIndex = 1;
             // 

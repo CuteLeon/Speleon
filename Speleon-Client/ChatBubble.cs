@@ -90,7 +90,6 @@ namespace Speleon_Client
             {
                 this.Dock = DockStyle.Left;
                 MessageContextLabel.BackColor = Color.Pink;
-                HeadPortraitLabel.Padding = new Padding(0, 0, 8, 0);
             }
 
 

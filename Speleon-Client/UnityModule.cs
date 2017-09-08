@@ -29,7 +29,18 @@ namespace Speleon_Client
         [DllImportAttribute("user32.dll")] public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")] public static extern bool ReleaseCapture();
         private const int WM_NCLBUTTONDOWN = 0xA1;
-        private const int HT_CAPTION = 0x2;
+        public const int HT_CAPTION = 0x2;
+        
+        //鼠标改变窗体大小消息常量
+        public const int WM_NCHITTEST = 0x0084;
+        public const int HT_LEFT = 10;
+        public const int HT_RIGHT = 11;
+        public const int HT_TOP = 12;
+        public const int HT_TOPLEFT = 13;
+        public const int HT_TOPRIGHT = 14;
+        public const int HT_BOTTOM = 15;
+        public const int HT_BOTTOMLEFT = 16;
+        public const int HT_BOTTOMRIGHT = 17;
 
         /// <summary>
         /// 为窗体绘制阴影
