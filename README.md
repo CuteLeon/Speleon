@@ -21,9 +21,14 @@ Leon 和 Special 专用的聊天程序
 
 ![image](./Build/SERVERSHUTDOWN.jpg)
 
+>聊天界面
+
+![image](./Build/ChatForm.png)
+
 >客户端与服务端登录界面
 
 ![image](./Build/截图.jpg)
+
 
 ---
 >* 鸣谢：大牛 [WY] 给我两次调试SQL充当小黄鸭，当代"小黄鸭调试法"忠实受众。
