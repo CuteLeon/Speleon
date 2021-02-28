@@ -7,27 +7,27 @@ Leon 和 Special 专用的聊天程序
 
 >正在登录
 
-![image](./Build/SIGNIN.jpg)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/SIGNIN.jpg)
 
 >登陆失败
 
-![image](./Build/SIGNINUNSUCCESSFULLY.jpg)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/SIGNINUNSUCCESSFULLY.jpg)
 
 >异地登陆
 
-![image](./Build/ANOTHORSIGNIN.jpg)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/ANOTHORSIGNIN.jpg)
 
 >服务端主动关闭
 
-![image](./Build/SERVERSHUTDOWN.jpg)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/SERVERSHUTDOWN.jpg)
 
 >聊天界面
 
-![image](./Build/ChatForm.png)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/ChatForm.jpg)
 
 >客户端与服务端登录界面
 
-![image](./Build/截图.jpg)
+![](https://raw.github.com/CuteLeon/Speleon/master/Build/截图.jpg)
 
 
 ---
